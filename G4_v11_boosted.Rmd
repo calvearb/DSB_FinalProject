@@ -17,7 +17,7 @@ always_allow_html: yes
 
 
 <hr>\clearpage
-
+ 
 
 # Introduction
 
@@ -675,13 +675,9 @@ cIT_14_MMZD_pred <- forecast(cIT_14_MMZD, h=30, level=c(0.8, 0.95))
 cIT_14_tbats <- tbats(cIT_14)
 cIT_14_tbats_pred <-forecast(cIT_14_tbats, h=30, level=c(0.8, 0.95))
 par(mfrow=c(1,1))
-plot(cIT_14_tbats_pred, xlab="Year", ylab="Predicted Electric Rate")
-lines(cIT_F, col="red")
 
 cIT_14_ARIMA <- auto.arima(cIT_14,seasonal=FALSE)
 cIT_14_ARIMA_pred <- forecast(cIT_14_ARIMA,30)
-plot(cIT_14_ARIMA_pred)
-lines(cIT_F, col="red")
 
 par(mfrow=c(3,2)) # This command sets the plot window to show 1 row of 4 plots
 plot(cIT_14_AAN_pred, xlab="Year", ylab="Acummulated deaths", ylim=c(0,100000))
@@ -694,7 +690,7 @@ plot(cIT_14_MMND_pred, xlab="Year", ylab="Acummulated deaths", ylim=c(0,100000))
 lines(cIT_F, col="red")
 plot(cIT_14_tbats_pred, xlab="Year", ylab="Predicted Electric Rate", ylim=c(0,100000))
 lines(cIT_F, col="red")
-plot(cIT_14_ARIMA_pred, ylim=c(0,100))
+plot(cIT_14_ARIMA_pred, ylim=c(0,100000))
 lines(cIT_F, col="red")
 
 ###
@@ -748,15 +744,16 @@ cIT_14_MMND_pred
 write.csv(cIT_14_MMND_pred, file = "IT no lockdown+14d (MMND) incl(ARIMA).csv") # export the selected model's predictions into a CSV file
 
 
-#expfore<-exp(cIT_14_ARIMA_pred$forecast)
-par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 4 plots
-plot(cIT_14_AAND_pred, xlab="Year", ylab="Acummulated deaths", ylim=c(0,20))
-lines(cIT_F, col="red")
-abline(v=2020+69/365, col="green")
-legend("left", legend=c("Best fitted model","Real death toll", "Start of Lockdown"), col=c("blue", "red","green"), lty=1)
 
 ```
+
+
 We perform the same analysis for France and the UK. We decide to hide the steps performed as they are similar to those done for Italy. The best models for these 2 countries are the MMND and ARIMA models respectively. 
+
+
+
+France  death count analysis 
+
 
 ```{r, echo=FALSE}
 #####################
@@ -859,13 +856,26 @@ mean(abs(errors_MMND/cFRA_14), na.rm=TRUE)*100
 mean(abs(errors_TBATS/cFRA_14), na.rm=TRUE)*100
 mean(abs(errors_ARIMA/cFRA_14), na.rm=TRUE)*100
 
+```
+
+Based on the mean errors, we conclude that for France the best model is the TBATS model
+
+```{r, echo=FALSE}
+
+
 # Print the mean and confidence intervals for the MMZ model
-cFRA_14_MMND_pred
+cFRA_14_TBATS_pred
 
 # Export the results out
-write.csv(cFRA_14_MMND_pred, file = "FRA no lockdown+14d (MMND) incl(ARIMA).csv") # export the selected model's predictions into a CSV file
+write.csv(cFRA_14_TBATS_pred, file = "FRA no lockdown+14d (MMND) incl(ARIMA).csv") # export the selected model's predictions into a CSV file
 
- 
+
+```
+
+UK death count analysis 
+
+
+```{r, echo=FALSE}
 #######################
 #####UK Analysis#######
 #######################
@@ -903,14 +913,11 @@ cUK_14_MMZD_pred <- forecast(cUK_14_MMZD, h=30, level=c(0.8, 0.95))
 
 cUK_14_tbats <- tbats(cUK_14)
 cUK_14_tbats_pred <-forecast(cUK_14_tbats, h=30, level=c(0.8, 0.95))
-par(mfrow=c(1,1))
-plot(cUK_14_tbats_pred, xlab="Year", ylab="Predicted Electric Rate")
-lines(cUK_F, col="red")
+
 
 cUK_14_ARIMA <- auto.arima(cUK_14,seasonal=FALSE)
 cUK_14_ARIMA_pred <- forecast(cUK_14_ARIMA,30)
-plot(cUK_14_ARIMA_pred)
-lines(cUK_F, col="red")
+
 
 par(mfrow=c(3,2)) # This command sets the plot window to show 1 row of 4 plots
 plot(cUK_14_AAN_pred, xlab="Year", ylab="Acummulated deaths", ylim=c(0,100000))
@@ -966,6 +973,13 @@ mean(abs(errors_MMND/cUK_14), na.rm=TRUE)*100
 mean(abs(errors_TBATS/cUK_14), na.rm=TRUE)*100
 mean(abs(errors_ARIMA/cUK_14), na.rm=TRUE)*100
 
+```
+
+Based on the mean errors, we conclude that for France the best model is the ARIMA model
+
+```{r, echo=FALSE}
+
+
 # Print the mean and confidence intervals for the MMZ model
 cUK_14_ARIMA_pred
 
@@ -973,7 +987,7 @@ cUK_14_ARIMA_pred
 write.csv(cUK_14_ARIMA_pred, file = "UK no lockdown+14d (MMND) incl(ARIMA).csv") # export the selected model's predictions into a CSV file
 
 ```
-After 14 days of lockdown, the results for all countries are: 
+After 14 days of lockdown, the projections of death for all countries are: 
 
 ```{r}
 ########################################
@@ -982,18 +996,18 @@ After 14 days of lockdown, the results for all countries are:
 
 
 #expfore<-exp(cIT_14_ARIMA_pred$forecast)
-par(mfrow=c(3,1)) 
-plot(cIT_14_MMND_pred, xlab="Year", ylab="Italy Acummulated deaths", ylim=c(0,200000))
+ 
+plot(cIT_14_MMND_pred, xlab="Year", ylab="Italy Acummulated deaths", ylim=c(0,250000))
 lines(cIT_F, col="red")
 abline(v=2020+69/365, col="green")
 legend("left", legend=c("Best fitted model","Real death toll", "Start of Lockdown"), col=c("blue", "red","green"), lty=1)
 
-plot(cFRA_14_MMND_pred, xlab="Year", ylab="France Acummulated deaths", ylim=c(0,200000))
+plot(cFRA_14_TBATS_pred, xlab="Year", ylab="France Acummulated deaths", ylim=c(0,250000))
 lines(cFRA_F, col="red")
 abline(v=2020+69/365, col="green")
 legend("left", legend=c("Best fitted model","Real death toll", "Start of Lockdown"), col=c("blue", "red","green"), lty=1)
 
-plot(cUK_14_ARIMA_pred, xlab="Year", ylab="UK Acummulated deaths", ylim=c(0,200000))
+plot(cUK_14_ARIMA_pred, xlab="Year", ylab="UK Acummulated deaths", ylim=c(0,250000))
 lines(cUK_F, col="red")
 abline(v=2020+69/365, col="green")
 legend("left", legend=c("Best fitted model","Real death toll", "Start of Lockdown"), col=c("blue", "red","green"), lty=1)
