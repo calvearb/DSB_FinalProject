@@ -18,6 +18,28 @@ always_allow_html: yes
 
 <hr>\clearpage
 
+---
+title: "Evaluation of lock-down effect in several European countries"
+author: "M. Noujaim, Q. Shi, M. Parashar, A. Bouzid, C. Alvear"
+output:
+  html_document:
+    css: ../../AnalyticsStyles/default.css
+    theme: paper
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+  pdf_document:
+    includes:
+      in_header: ../../AnalyticsStyles/default.sty
+always_allow_html: yes
+---
+
+<!-- **Note:** Assuming the working directory is "MYDIRECTORY/INSEADAnalytics" (where you have cloned the course material), you can create an html file by running in your console the command (pay attention to the directory you are in, check it using getwd()) rmarkdown::render("CourseSessions/InClassProcess/MarketSegmentationProcessInClass.Rmd") -->
+
+
+<hr>\clearpage
+
 # Introduction
 
 The unfolding, global COVID-19 pandemic is a human crisis of historic scale and complexity. It is straining healthcare systems, government financial capabilities, and the ability of many organizations to cope with the changes wrought by the virus and the response to it. The level of uncertainty for most leaders has been unprecedented, and most of our frameworks for planning and problem solving were unable to manage the geographic variability, uncertainty, and the exponential change brought by the COVID-19 crisis.
@@ -37,36 +59,69 @@ We will then compare countries to one another and evaluate how the timing of pub
 # The Project Initiative
 
 The project aims at analyzing the effect of the lock-down policies in Italy, France and United Kingdom and then observe the change in predicting the mortality curve. 
-We will put ourselves in the shoes of Government decision makers at different dates and analyze the public data available for the selected countries to come up with predictive models of mortality. 
-We will create several time-series models to predict the accumulated deaths with the information at the lockdown date, 14 days later and 56 days later. The first two dates will help measuring the assumed positive effect of lockdown. We will compare those figures with the real death toll to know how many lives were saved and how the virus contamination was slowed down in each country
-The later prediction, being done 8 weeks after the lockdown date, should be a good indicator or the current situation of the crisis and the level of control and certainty about the pandemic evolution. It will ultimately indicate whether lock shall be ended or pursue. 
+We will put ourselves in the shoes of Government decision makers at different dates and analyze the public data available to come up with predictive models of mortality. 
+We will create several time-series models to predict the accumulated deaths with the information at the lockdown date, 14 days later and 56 days later. The first two dates will help measuring the assumed positive effect of lockdown. We will compare those figures with the real death toll to know how many lives were saved and how the virus contamination was slowed down in each country.
+The later prediction, being done 8 weeks after the lockdown date, should be a good indicator of the current situation of the crisis and of the level of control and certainty about the pandemic evolution. It will ultimately indicate whether lockdown shall be ended or pursued. 
 
 <hr>\clearpage
 
 # The Process
 
-The project methodology is time-series modeling and implementation to evaluate future mortality. 
+The project methodology is a time-series modeling and implementation to evaluate future mortality. 
 
-Firstly, we want to see how was the situation was when the Lockdown was decided. 
-For instance, in the case of Italy, the deaths before the lockdown (until March 9th 2020) were already growing at an exponential rate. So we would first like to se how was the prediction this day and estimate how many lives were saved thanks to the lockdown imposition by comparing the prediciton with the actual data.
+Firstly, we want to see how was the situation when the Lockdown was decided. 
+For instance, in the case of Italy, the deaths before the lockdown (until March 9th 2020) were already growing at an exponential rate. So we would first like to see how was the prediction this day and estimate how many lives were saved thanks to the lockdown imposition by comparing the prediciton with the actual data.
  
 Secondly, because the virus can incubate for up to 2 weeks before the first symptoms appear, we will also look at the prediction 14 days after the Lockdown decision. With more data available but without the direct impact of the Lockdown (due to the incubation period), this model should have narrower and more accurate confidence interval. 
 
-Nevertheless, both first models would note take into account the lockdown effect which ultimately should  drastically change the spread of the virus and so further predicitons. To do so, we will finally take the latest data available (May 25th) to observe the latest predictions. 
+Nevertheless, both first models would note take into account the lockdown effect, which should drastically change the spread of the virus and so further predictions. To do so, we would look at prediction 28 days after the lockdown start. 
 
-This will give us insight on how the delay in lockdown dates has affected the spread curve of the Coronavirus over 8 weeks. It will enable us to see which country controled the best the virus spread and which economy will be able to restart first by the end of confinement. 
+We will finally take the latest data available (May 25th) to observe the latest predictions. By doing so, we will know the current status in each of the three countries.
+This will give us insights on how the delay in lockdown dates for each country has affected the spread curve of the Coronavirus over 8 weeks. 
+We will be able to compare different lockdown impacts on mortality prediction and will determine which countries are in good positions for ending the lockdown. Considering end of confinement also means economy restart, it would also give us a sense of which lockdown and stringency policy decisions were the most effective from an economic perspective. Indeed, the earlier the end of lockdown, the better for the economy. 
 
-We will then repeat this methodology for France and United Kingdom.
-By doing so, we wil know the current status in each of the three countries
-
-Finally, we'll compare different lockdown impacts on mortality prediction and will determine which countries are in good positions for deconfinement. Considering End of confinement means also economy restart, it would also give us a sense of which lockdown decision was the most effective from an economic perspective, as the earlier the restarts, the better for the economy. 
-
-### The Data Set 
+## The Data Set 
 
 The data set is extracted from the Covid-19 official Europe Data Website (source:https://data.europa.eu/euodp/en/data/dataset/covid-19-coronavirus-data)
 It contains the 2020 daily evolution of Deaths and confirmed cases by country. 
 
- keeping the models that fits the best. 
+We will start by importing the dataset 
+
+## Timeseries Dataframe
+The timeseries starting point will always be the day in which the first death was recensed for each country. In the case of Italy, first death was on February 23rd January 2020, (day 54 of 2020 - Line 55 of the dataset). 
+Reference Start Day will be considered January 1,2020 as we do not have data for 2019 in the selected countries. 
+For time series, a minimum of periods is needed to perform analysis, so we reduced the frequency to days instead of months or years because Covid-19 is very new so we could not have yearly nor monthly background. 
+
+The below graphs show the real data given by the official Covid-19 Europe Data Webiste till May 25th, 2020.
+The vertical green line represents the lockdown date in the country (For Italy it is March 9th which is 65 days after January 1,2020). 
+The red data line refers to the data we will take into account for predicting future mortality. This interval will change depending on the date in which we analyze the data. For instance, to perform the prediction at the lockdown date, we will take into account all date between the first death till the lockdown date. 
+The black line is the real death toll of the country given by the official Covid-19 Europe Data Webiste till May 25th, 2020.
+
+## Prediction Methodology 
+We will perform different types of timeseries models:
+
+### Exponential Smoothing
+4 models of Exponential Smoothing ETS with and without dampening: AAN, MMN, AMND, MMND 
+The death curve is cumulative and so there will be no seasonality. Therefore, the timeseries models with Z should not be useful. 
+
+### TBATS
+Decomposition model trigonometric TBATS. TBATS will become BATS because of no seasonality so no need for trigonomectric adjustment. 
+
+### Auto-regressive Method ARIMA
+
+We will finally select the model that fits the best.
+
+We will further reproduce the same process for France and UK. 
+Finally we will present 3 best plots for each country
+
+This timesieries process will be updated by date and countries before performing different timeseries models in order to assess the most accurate prediction model. 
+
+## At lockdown Date 
+
+
+
+
+
 
 ```{r}
 covid_data <- read.csv("COVID_data_v3.csv", header=TRUE, sep=",")
@@ -75,11 +130,7 @@ covid_data <- read.csv("COVID_data_v3.csv", header=TRUE, sep=",")
 
 ```
 
-## Import the data set 
 
-### At Lock Down Date 
-
-### 14 days after lockdown
 
 ```{r}
 library(forecast)
@@ -197,14 +248,33 @@ legend("left", legend=c("Best fitted model","Real death toll", "Start of Lockdow
 
 
 ```
-### 56 days after lockdown 
+
+## 14 days after lockdown
+
+We will further reproduce the same process for France and UK. 
+Finally we obtain the 3 following plots:
+
+## 28 days after lockdown
+
+We will further reproduce the same process for France and UK. 
+Finally we obtain the 3 following plots:
+
+## 56 days after lockdown 
+
+We will further reproduce the same process for France and UK. 
+Finally we obtain the 3 following plots:
 
 # End of Project Proposal
 
 By looking at the predicion models, we see that France has adopted the best approach in comparison with Italy and United Kingdom. 
 Helped by the Italian experience, France has pronounced the lockdown before reach a very damageable tipping point. The predicting curve of martality rate at Lockdown date suggests that Italy had taken the least effective measures. 
+
 This analysis is confirmed with the post-14 days observations that assess the real impact of the lockdown after the incubation period. 
-Finally, the post-56 days data show that UK is in the worst situation as the curve of infection is still very steep. In terms of business implication, it also means that UK might have to wait longer than France and Italy to deconfine. 
+
+Finally, the post-56 days data shows that UK is in the worst situation as the curve of infection is still very steep. In terms of business implication, it also means that UK might have to wait longer than France and Italy to deconfine. 
 This conclusion sounds quite logical as the virus spread was exponential. Therefore, the longer a country has waited to pronounce the confinement, the more spread was the virus with the multiplicative consequences it engenders, and the longer it will take to stop the contamination. 
 
-Nevertheless, the analysis presents some limitations as we have not taken into account some factors such as the density of the population, nor segmented countries into areas at different level of contamination risks. Moreover, economic or political terms have not been taken into account in our analaysis. Indeed, the Brexit and tense political situation might have pushed UK's government to defer the confinement date in order to diminish the economic impact of the covid-19. In France, the confinement has been announced just after political vote. 
+Overall, from an economic perspective, UK might have more to lose by havong waited longer to pronounce lockdown while Italy and France are in better position to relaunch their economy. 
+
+Nevertheless, the analysis presents some limitations as we have not taken into account some factors such as the density of the population, nor segmented countries into areas at different level of contamination risks. The stringency of the lockdown has been assumed
+Moreover, economic or political terms have not been taken into account in our analaysis. Indeed, the Brexit and tense political situation might have pushed UK's government to defer the confinement date in order to diminish the economic impact of the covid-19. In France, the confinement has been announced just after political vote. 
