@@ -97,6 +97,8 @@ The vertical green line represents the lockdown date in the country (For Italy i
 The red data line refers to the data we will take into account for predicting future mortality. This interval will change depending on the date in which we analyze the data. For instance, to perform the prediction at the lockdown date, we will take into account all date between the first death till the lockdown date. 
 The black line is the real death toll of the country given by the official Covid-19 Europe Data Webiste till May 25th, 2020.
 
+This timesieries process will be updated by date and countries before performing different timeseries models in order to assess the most accurate prediction model. 
+
 ## Prediction Methodology 
 We will perform different types of timeseries models:
 
@@ -109,12 +111,9 @@ Decomposition model trigonometric TBATS. TBATS will become BATS because of no se
 
 ### Auto-regressive Method ARIMA
 
-We will finally select the model that fits the best.
+We will finally select the model that fits the best for the first country and will further reproduce the same process other countries. Finally we will present 3 best plots for each country
 
-We will further reproduce the same process for France and UK. 
-Finally we will present 3 best plots for each country
-
-This timesieries process will be updated by date and countries before performing different timeseries models in order to assess the most accurate prediction model. 
+For reading purpose, we will only present the comprehensive process for Italy at Lockdown. We will only present the results of the best plot for others countries and other dates with some comments. 
 
 ## At lockdown Date 
 
