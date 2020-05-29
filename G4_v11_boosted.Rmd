@@ -70,6 +70,13 @@ It contains the 2020 daily evolution of Deaths and confirmed cases by country.
 
  keeping the models that fits the best. 
 
+```{r}
+covid_data <- read.csv("/COVID_data_v3.csv", header=TRUE, sep=",")
+#ProjectData <- data.matrix(ProjectData) 
+#ProjectData_INITIAL <- ProjectData
+
+```
+
 ## Import the data set 
 
 ### At Lock Down Date 
