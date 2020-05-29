@@ -1,0 +1,63 @@
+---
+title: "Evaluation of lock-down effect in several European countries"
+author: "M. Noujaim, Q. Shi, M. Parashar, A. Bouzid, C. Alvear"
+output:
+  html_document:
+    css: ../../AnalyticsStyles/default.css
+    theme: paper
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+  pdf_document:
+    includes:
+      in_header: ../../AnalyticsStyles/default.sty
+always_allow_html: yes
+---
+
+<!-- **Note:** Assuming the working directory is "MYDIRECTORY/INSEADAnalytics" (where you have cloned the course material), you can create an html file by running in your console the command (pay attention to the directory you are in, check it using getwd()) rmarkdown::render("CourseSessions/InClassProcess/MarketSegmentationProcessInClass.Rmd") -->
+
+
+<hr>\clearpage
+
+# Introduction
+
+The unfolding, global COVID-19 pandemic is a human crisis of historic scale and complexity. It is straining health care systems, government fiscal capacity, and the ability of many organizations to cope with the changes wrought by the virus and the response to it. The level of uncertainty for most leaders is unprecedented, and most of our frameworks for planning and problem solving are unable to manage the geographic variability, uncertainty, and the exponential change brought by the COVID-19 crisis.
+
+Public policy—regarding financial interventions, for example, and the timing of the reopening of local economies—is often ambiguous and is constantly being revised. When will people feel safe enough to resume normal life? How will this affect their consumption habits? Will social unrest erupt as the economic fallout intensifies? The answers to these questions and more will be of paramount importance to the business environment, but they are largely unknown—rendering forecasts essentially impossible.
+
+There are three basic models for restarting social and economic life: the full reboot approach now being pursued by New Zealand; an approach focused on maintaining restrictions for vulnerable populations; and the graduated approach being taken by countries such as China.
+Under the full reboot model, the government waits until new COVID-19 cases are at zero and then restarts social and economic activity with minimal restrictive measures but with limited (or no) international travel. This strategy requires a set of conditions that may not be feasible for most countries, including tight border controls, high volumes of testing and contact tracing, and the ability to enforce an initial lengthy lockdown period.
+
+The second approach allows for the widespread restarting of social and economic activity but continued strict isolation for vulnerable populations such as the elderly. Such an approach may not be feasible in many countries, given the large numbers of people who would need to remain in isolation until a vaccine or cure is available. However, it may be the right strategy for restarting activity in the near term for low-income countries that are unable to rapidly build up health care and testing capacity without international assistance.
+
+The third approach is likely to be the most widely adopted. Under this graduated model, governments lift restrictions in a deliberate, phased, and incremental manner based on the progression of the disease, the readiness of the public health system, and the preparedness of the public. This approach is in varying stages of introduction around the world, with countries in Asia and Europe leading the way.
+
+In our project, we will analyze the public data available for select countries to come up with a model to predict how the different approaches compare to one another and how the timing of public policy decision affects the control of a pandemic like Covid-19. 
+
+<hr>\clearpage
+
+# The Project Initiative
+
+This study analyzes the effect of the lock-down policies in some European countries and then analyze the change in the mortality rate. For instance, in the case of France, the deaths before the lockdown (until March 16th 2020) were growing at an exponential rate. So we would like to know how many lives were saved thanks to the lockdown imposition.
+
+* What would be the death toll in each country if no lockdown is imposed
+* Estimate the economical cost of saving a life in different countries
+* Comparing lockdown effects to know in which country the lockdown was more effective 
+
+
+<hr>\clearpage
+
+# The Process
+
+First, we will create several models to predict the accumulated deaths in France with the information before the lockdown, keeping the one that fits the best so we can predict the death toll in case of not changing to a lockdown politic. Then we'll compare these figures with the real death toll to know how many lives were saved.
+
+We'll repeat this methodology for other European countries such as Italy and Spain.
+
+In a second step, we'll analize the effect on the GDP due to the lockdown restrictions and we'll get a value of economical cost for each saved life.
+
+Finally, we'll compare different lockdown results accross different countries in Europe.
+
+
+
+# End of Project Proposal

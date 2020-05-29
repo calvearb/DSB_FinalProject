@@ -1,0 +1,71 @@
+---
+title: "Evaluation of lock-down effect in several European countries"
+author: "M. Noujaim, Q. Shi, M. Parashar, A. Bouzid, C. Alvear"
+output:
+  html_document:
+    css: ../../AnalyticsStyles/default.css
+    theme: paper
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+  pdf_document:
+    includes:
+      in_header: ../../AnalyticsStyles/default.sty
+always_allow_html: yes
+---
+
+<!-- **Note:** Assuming the working directory is "MYDIRECTORY/INSEADAnalytics" (where you have cloned the course material), you can create an html file by running in your console the command (pay attention to the directory you are in, check it using getwd()) rmarkdown::render("CourseSessions/InClassProcess/MarketSegmentationProcessInClass.Rmd") -->
+
+
+<hr>\clearpage
+
+# Introduction
+
+The unfolding, global COVID-19 pandemic is a human crisis of historic scale and complexity. It is straining health care systems, government fiscal capacity, and the ability of many organizations to cope with the changes wrought by the virus and the response to it. The level of uncertainty for most leaders is unprecedented, and most of our frameworks for planning and problem solving are unable to manage the geographic variability, uncertainty, and the exponential change brought by the COVID-19 crisis.
+
+Public policy—regarding financial interventions, for example, and the timing of the reopening of local economies—is often ambiguous and is constantly being revised. When will people feel safe enough to resume normal life? How will this affect their consumption habits? Will social unrest erupt as the economic fallout intensifies? The answers to these questions and more will be of paramount importance to the business environment, but they are largely unknown—rendering forecasts essentially impossible.
+
+Government decision for lockdown was made by mixing a tradeoff between healthcare capabilities and economic disaster. 
+Those concerns have pushed governments to pronounce lockdowns at different moments to also mitigate as much a spossible the economic impact of the Covid-19. 
+If all countries lacked experience in maganing such a crisis, Italian lockdown decision was taken after patient 0 was discovered and after what we commonly call a "tipping point" when the virus had already spread fast. 
+French decision was taken a week after Italy, before the tipping point was discovered. 
+UK, in political and economic trouble, wait a week more than france to announce the confinement. 
+
+How did those delays affected the spread of the virus?
+When will the end of confinement will be appropriate based on those different dates?
+
+In our project, we will analyze the public data available for the selected countries to come up with a model to predict how the different approaches compare to one another and how the timing of public policy decision affects the control of a pandemic like Covid-19. 
+
+<hr>\clearpage
+
+# The Project Initiative
+
+This study analyzes the effect of the lock-down policies in Italy, France and United Kingdom and then analyze the change in predicting the mortality rate. For instance, in the case of Italy, the deaths before the lockdown (until March 9th 2020) were already growing at an exponential rate. So we would like to know how many lives were saved thanks to the lockdown imposition.
+
+In this project, we would put ourselves in the soes of government decision makers and will build deaths prediction model at different date. We will then analyze how the decision altered the virus spread. 
+Because the virus can incubate for up to 2 weeks before the first symptoms appears, we will also look at the prediction 14 days after the confinement decision. 
+Finally, we will take the latest data available (May 25th) to observe how to delay in decision making affect the spreading curve of the Coronavirus. It will enable us to see which country controled the best the virus spread and which economy will be able to restart first thanks to the end of confinement. 
+
+<hr>\clearpage
+
+# The Process
+
+First, we will create several models to predict the accumulated deaths in Italy with the information at the lockdown date, 14 days later and 56 days later, keeping the models that fits the best. Then we'll compare these figures with the real death toll to know how many lives were saved and how the virus contaminated was slowed down in each country.
+
+We will then repeat this methodology for France and United Kingdom.
+
+Finally, we'll compare different lockdown impacts on mortality prediciton and will determine which countries are in good positions for deconfinement. Considering End of confinement means also economy restart, it would also give us a sense of which lockdown decision was the most effective from an economic perspective, as the earlier the restarts, the better for the economy. 
+
+### Import Data
+
+
+# End of Project Proposal
+
+By looking at the predicion models, we see that France has adopted the best approach in comparison with Italy and United Kingdom. 
+Helped by the Italian experience, France has pronounced the loxkdown before reach a very damageable tipping point. The predicting curve of martality rate at LOckdown date suggests that Italy had taken the least effective measures. 
+This analysis is confirmed with the post-14 days observations that assess the real impact of the lockdown after the incubation period. 
+Finally, the post-56 days data show that UK is in the worst situation as the curve of infection is still very steep. In terms of business implication, it also means that UK might have to wait longer than France and Italy to deconfine. 
+This conclusion sounds quite logical as the virus spread was exponential. Therefore, the longer a country has waited to pronounce the confinement, the more spread was the virus with the multiplicative consequences it engenders, and the longer it will take to stop the contamination. 
+
+Nevertheless, the analysis presents some limitations as we have not taken into account some factors such as the density of the population, nor segmented countries into areas at different level of contamination risks. Moreover, economic or political terms have not been taken into account in our analaysis. Indeed, the Brexit and tense political situation might have pushed UK's government to defer the confinement date in order to diminish the economic impact of the covid-19. In France, the confinement has been announced just after political vote. 
