@@ -44,13 +44,13 @@ always_allow_html: yes
 
 The unfolding, global COVID-19 pandemic is a human crisis of historic scale and complexity. It is straining healthcare systems, government financial capabilities, and the ability of many organizations to cope with the changes wrought by the virus and the response to it. The level of uncertainty for most leaders has been unprecedented, and most of our frameworks for planning and problem solving were unable to manage the geographic variability, uncertainty, and the exponential change brought by the COVID-19 crisis.
 
-Government decision for lockdown was made by compromising between healthcare capabilities and economic disaster. The timing of governements' initiatives were often ambiguous and have been constantly being revised. 
+Government decisions for lockdown were mainly made by compromising between healthcare capabilities and economic disaster. The timing of governements' initiatives were often ambiguous and have been constantly being revised. 
 
 Mitigate the econonomic impact of the Covid-19 and assess the stringency level of confinement have finally pushed governments to pronounce lockdowns at different moments. 
 If all countries lacked experience in maganing such a crisis, Italian lockdown decision was taken after patient 0 was discovered and after what we commonly call a "tipping point", that is when the virus had already spread fast. French decision was taken a week after Italy. Finally, United Kingdom, in political and economic trouble due to the Brexit situation, waited a week more than France to announce the confinement. 
 
-How did those delays affected the spread of the virus and mortality
-How long should be the lockdown period in each country and ultimately which country had managed the best the situation?  
+How did those delays affected the spread of the virus and mortality?
+How long should be the lockdown period in each country and ultimately which country has best managed the situation?  
 
 We will then compare countries to one another and evaluate how the timing of public policy decisions (Lockdown) has affected the control of the Covid-19 pandemic spread.
 
@@ -58,10 +58,8 @@ We will then compare countries to one another and evaluate how the timing of pub
 
 # The Project Initiative
 
-The project aims at analyzing the effect of the lock-down policies in Italy, France and United Kingdom and then observe the change in predicting the mortality curve. 
-We will put ourselves in the shoes of Government decision makers at different dates and analyze the public data available to come up with predictive models of mortality. 
-We will create several time-series models to predict the accumulated deaths with the information at the lockdown date, 14 days later and 56 days later. The first two dates will help measuring the assumed positive effect of lockdown. We will compare those figures with the real death toll to know how many lives were saved and how the virus contamination was slowed down in each country.
-The later prediction, being done 8 weeks after the lockdown date, should be a good indicator of the current situation of the crisis and of the level of control and certainty about the pandemic evolution. It will ultimately indicate whether lockdown shall be ended or pursued. 
+The project aims at analyzing the effect of the lockdown policies in Italy, France and United Kingdom and then observe the change in the mortality curve predictions. 
+We will put ourselves in the shoes of Government decision makers at different dates and analyze the public data available to come up with predictive models of mortality. We will create several time-series models to predict the cumulative deaths with the information at the lockdown date, 14 days, 28 days and 56 days later.
 
 <hr>\clearpage
 
@@ -71,14 +69,14 @@ The project methodology is a time-series modeling and implementation to evaluate
 
 Firstly, we want to see how was the situation when the Lockdown was decided. 
 For instance, in the case of Italy, the deaths before the lockdown (until March 9th 2020) were already growing at an exponential rate. So we would first like to see how was the prediction this day and estimate how many lives were saved thanks to the lockdown imposition by comparing the prediciton with the actual data.
- 
-Secondly, because the virus can incubate for up to 2 weeks before the first symptoms appear, we will also look at the prediction 14 days after the Lockdown decision. With more data available but without the direct impact of the Lockdown (due to the incubation period), this model should have narrower and more accurate confidence interval. 
 
-Nevertheless, both first models would note take into account the lockdown effect, which should drastically change the spread of the virus and so further predictions. To do so, we would look at prediction 28 days after the lockdown start. 
+Secondly, because the virus can incubate for up to 2 weeks before the first symptoms appear, we will also look at the prediction 14 days after the Lockdown decision. With more data available but without the direct impact of the Lockdown (due to the incubation period), this model should have narrower and more accurate confidence interval.  The first two dates will compare early predictions with the real death toll to know how many lives were saved and how the virus contamination was slowed down in each country.
 
-We will finally take the latest data available (May 25th) to observe the latest predictions. By doing so, we will know the current status in each of the three countries.
-This will give us insights on how the delay in lockdown dates for each country has affected the spread curve of the Coronavirus over 8 weeks. 
-We will be able to compare different lockdown impacts on mortality prediction and will determine which countries are in good positions for ending the lockdown. Considering end of confinement also means economy restart, it would also give us a sense of which lockdown and stringency policy decisions were the most effective from an economic perspective. Indeed, the earlier the end of lockdown, the better for the economy. 
+Nevertheless, both first models would note take into account the lockdown effect, which should drastically change the spread of the virus and so further predictions. To do so, we would look at prediction 28 days after the lockdown start which should help measuring the assumed positive effect of lockdown. 
+
+Finally, the latest prediction, being done 8 weeks after the lockdown date with the latest data available (May 25th), should be a good indicator of the current situation of the crisis and of the level of control and certainty about the pandemic evolution. This will give us insights on how the delay in lockdown dates for each country has affected the spread curve of the Coronavirus over 8 weeks. It will ultimately indicate whether lockdown shall be ended or pursued.
+
+At the end of the process, we will be able to compare different lockdown impacts on mortality predictions and will determine which countries are in good position for ending the lockdown. Considering end of confinement also means economy restart, it would also give us a sense of which lockdown and stringency policy decisions were the most effective from an economic perspective. Indeed, the earlier the end of lockdown, the better for the economy. 
 
 ## The Data Set 
 
