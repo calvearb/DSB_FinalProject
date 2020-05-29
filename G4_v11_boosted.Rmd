@@ -3,7 +3,6 @@ title: "Evaluation of lock-down effect in several European countries"
 author: "M. Noujaim, Q. Shi, M. Parashar, A. Bouzid, C. Alvear"
 output:
   html_document:
-    css: ../../AnalyticsStyles/default.css
     theme: paper
     toc: yes
     toc_float:
@@ -11,7 +10,6 @@ output:
       smooth_scroll: yes
   pdf_document:
     includes:
-      in_header: ../../AnalyticsStyles/default.sty
 always_allow_html: yes
 ---
 
@@ -71,7 +69,7 @@ It contains the 2020 daily evolution of Deaths and confirmed cases by country.
  keeping the models that fits the best. 
 
 ```{r}
-covid_data <- read.csv("/COVID_data_v3.csv", header=TRUE, sep=",")
+covid_data <- read.csv("COVID_data_v3.csv", header=TRUE, sep=",")
 #ProjectData <- data.matrix(ProjectData) 
 #ProjectData_INITIAL <- ProjectData
 
