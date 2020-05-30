@@ -159,7 +159,7 @@ cIT2_0_MMZD_pred <- forecast(cIT2_0_MMZD, h=P, level=c(0.8, 0.95))
 ```
 ```{r, echo=FALSE}
 cIT2_0_tbats <- tbats(cIT2_0)
-cIT2_0_tbats_pred <-forecast(cIT2_0_tbats, h=30, level=c(0.8, 0.95))
+cIT2_0_tbats_pred <-forecast(cIT2_0_tbats, h=P, level=c(0.8, 0.95))
 ```
 ```{r, echo=FALSE}
 cIT2_0_ARIMA <- auto.arima(cIT2_0,seasonal=FALSE)
@@ -303,7 +303,7 @@ cFRA2_0_MMND_pred <- forecast(cFRA2_0_MMND, h=P, level=c(0.8, 0.95))
 cFRA2_0_MMZD_pred <- forecast(cFRA2_0_MMZD, h=P, level=c(0.8, 0.95))
 
 cFRA2_0_tbats <- tbats(cFRA2_0)
-cFRA2_0_tbats_pred <-forecast(cFRA2_0_tbats, h=30, level=c(0.8, 0.95))
+cFRA2_0_tbats_pred <-forecast(cFRA2_0_tbats, h=P, level=c(0.8, 0.95))
 
 cFRA2_0_ARIMA <- auto.arima(cFRA2_0,seasonal=FALSE)
 cFRA2_0_ARIMA_pred <- forecast(cFRA2_0_ARIMA,P)
@@ -420,7 +420,7 @@ cUK2_0_MMND_pred <- forecast(cUK2_0_MMND, h=P, level=c(0.8, 0.95))
 cUK2_0_MMZD_pred <- forecast(cUK2_0_MMZD, h=P, level=c(0.8, 0.95))
 
 cUK2_0_tbats <- tbats(cUK2_0)
-cUK2_0_tbats_pred <-forecast(cUK2_0_tbats, h=30, level=c(0.8, 0.95))
+cUK2_0_tbats_pred <-forecast(cUK2_0_tbats, h=P, level=c(0.8, 0.95))
 
 cUK2_0_ARIMA <- auto.arima(cUK2_0,seasonal=FALSE)
 cUK2_0_ARIMA_pred <- forecast(cUK2_0_ARIMA,P)
