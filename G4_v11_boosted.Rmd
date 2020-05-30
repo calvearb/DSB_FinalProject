@@ -17,9 +17,9 @@ always_allow_html: yes
 
 
 <hr>\clearpage
- 
 
-# Introduction
+
+# 1. Introduction
 
 The unfolding, global COVID-19 pandemic is a human crisis of historic scale and complexity. It is straining healthcare systems, government financial capabilities, and the ability of many organizations to cope with the changes wrought by the virus and the response to it. The level of uncertainty for most leaders has been unprecedented, and most of our frameworks for planning and problem solving were unable to manage the geographic variability, uncertainty, and the exponential change brought by the COVID-19 crisis.
 
@@ -35,14 +35,14 @@ We will then compare countries to one another and evaluate how the timing of pub
 
 <hr>\clearpage
 
-# The Project Initiative
+# 2. The Project Initiative
 
 The project aims at analyzing the effect of the lockdown policies in Italy, France and United Kingdom and then observe the change in the mortality curve predictions. 
 We will put ourselves in the shoes of Government decision makers at different dates and analyze the public data available to come up with predictive models of mortality. We will create several time-series models to predict the cumulative deaths with the information at the lockdown date, 14 days, 28 days and 56 days later.
 
 <hr>\clearpage
 
-# The Process
+# 3. The Process
 
 The project methodology is a time-series modeling and implementation to evaluate future mortality. 
 
@@ -63,6 +63,11 @@ The data set is extracted from the Covid-19 official Europe Data Website (source
 It contains the 2020 daily evolution of Deaths and confirmed cases by country. 
 
 We will start by importing the dataset 
+```{r, echo=TRUE}
+covid_data <- read.csv("COVID_data_v3.csv", header=TRUE, sep=",")
+#ProjectData <- data.matrix(ProjectData) 
+#ProjectData_INITIAL <- ProjectData
+```
 
 ## Timeseries Dataframe
 The timeseries starting point will always be the day in which the first death was recensed for each country. In the case of Italy, first death was on February 23rd January 2020, (day 54 of 2020 - Line 55 of the dataset). 
@@ -71,43 +76,13 @@ For time series, a minimum of periods is needed to perform analysis, so we reduc
 
 The below graphs show the real data given by the official Covid-19 Europe Data Webiste till May 25th, 2020.
 The vertical green line represents the lockdown date in the country (For Italy it is March 9th which is 65 days after January 1,2020). 
-The red data line refers to the data we will take into account for predicting future mortality. This interval will change depending on the date in which we analyze the data. For instance, to perform the prediction at the lockdown date, we will take into account all date between the first death till the lockdown date. 
+The red data line refers to the data we will take into account for predicting future mortality. This interval will change depending on the date in which we analyze the data. For instance, to perform the prediction at the lockdown date, we will take into account all dates between the first death till the lockdown date. 
 The black line is the real death toll of the country given by the official Covid-19 Europe Data Webiste till May 25th, 2020.
 
-This timesieries process will be updated by date and countries before performing different timeseries models in order to assess the most accurate prediction model. 
+This timeseries dataframe will be updated by date and countries before performing different date predictions. 
 
-## Prediction Methodology 
-We will perform different types of timeseries models:
-
-### Exponential Smoothing
-4 models of Exponential Smoothing ETS with and without dampening: AAN, MMN, AMND, MMND 
-The death curve is cumulative and so there will be no seasonality. Therefore, the timeseries models with Z should not be useful. 
-
-### TBATS
-Decomposition model trigonometric TBATS. TBATS will become BATS because of no seasonality so no need for trigonomectric adjustment. 
-
-### Auto-regressive Method ARIMA
-
-We will finally select the model that fits the best for the first country and will further reproduce the same process other countries. Finally we will present 3 best plots for each country
-
-For reading purpose, we will only present the comprehensive process for Italy at Lockdown. We will only present the results of the best plot for others countries and other dates with some comments. 
-
-## At lockdown Date 
-
-
-
-
-
-
-
-## Import the data set 
-
+### Italian Data
 ```{r, echo=FALSE}
-echo=FALSE
-covid_data <- read.csv("COVID_data_v3.csv", header=TRUE, sep=",")
-#ProjectData <- data.matrix(ProjectData) 
-#ProjectData_INITIAL <- ProjectData
-
 t0_IT=2020+53/365 #day of first casualty
 P=15 #predicted days
 cIT2_0 <- ts((covid_data$Cdeaths_IT[54:69]),start=t0_IT, frequency=365) #t=0 @ day69. +14d #before it was starting at 45
@@ -117,9 +92,10 @@ plot(cIT3, xlab="Time", ylab="Accumulated deaths (Italy)")
 lines(cIT2_0, col="red")
 abline(v=2020+69/365, col="green")
 legend("bottomright", legend=c("Real death toll","Data to use", "Start of Lockdown(d=0)"), col=c("blue", "red","green"), lty=1)
+```
 
-
-
+### French Data
+```{r, echo=FALSE}
 #French Data
 t0_FR <- 2020+46/365
 cFRA2_0 <- ts(covid_data$Cdeaths_FRA[46:75],start=t0_FR, frequency=365) #t=0 @ day75, March 15th #before it was starting at 45
@@ -129,8 +105,10 @@ plot(cFRA3, xlab="Time", ylab="Accumulated deaths (France)")
 lines(cFRA2_0, col="red")
 abline(v=2020+75/365, col="green")
 legend("bottomright", legend=c("Real death toll","Data to use", "Start of Lockdown(d=0)"), col=c("blue", "red","green"), lty=1)
+```
 
-
+### UK Data
+```{r, echo=FALSE}
 #UK Data
 
 t0_UK=2020+67/365
@@ -144,11 +122,14 @@ legend("bottomright", legend=c("Real death toll","Data to use", "Start of Lockdo
 
 
 ```
+## Predictions at Lockdown Date 
 
+### Italy at Lockdown Date
 
+For reading purpose, we will only present the comprehensive process for Italy at Lockdown. We will then only show the results of the best plot for others countries and other dates with some comments. 
 
-### At Lock Down Date 
-#### Italy at Lock Down Date
+### Prediction Methodology 
+We will perform different types of timeseries models:
 ```{r, echo=FALSE}
 library(forecast)
 #Italy
@@ -164,6 +145,8 @@ cIT2_0_MMZD <- ets(cIT2_0, model="MMZ", damped=TRUE)
 
 
 # Create their prediction "cones" for 360 months (30 years) into the future with quintile confidence intervals
+```
+```{r, echo=FALSE}
 cIT2_0_AAN_pred <- forecast(cIT2_0_AAN, h=P, level=c(0.8, 0.95))
 cIT2_0_AAZ_pred <- forecast(cIT2_0_AAZ, h=P, level=c(0.8, 0.95))
 cIT2_0_MMN_pred <- forecast(cIT2_0_MMN, h=P, level=c(0.8, 0.95))
@@ -173,13 +156,20 @@ cIT2_0_AAND_pred <- forecast(cIT2_0_AAND, h=P, level=c(0.8, 0.95))
 cIT2_0_AAZD_pred <- forecast(cIT2_0_AAZD, h=P, level=c(0.8, 0.95))
 cIT2_0_MMND_pred <- forecast(cIT2_0_MMND, h=P, level=c(0.8, 0.95))
 cIT2_0_MMZD_pred <- forecast(cIT2_0_MMZD, h=P, level=c(0.8, 0.95))
-
+```
+```{r, echo=FALSE}
 cIT2_0_tbats <- tbats(cIT2_0)
 cIT2_0_tbats_pred <-forecast(cIT2_0_tbats, h=30, level=c(0.8, 0.95))
-
+```
+```{r, echo=FALSE}
 cIT2_0_ARIMA <- auto.arima(cIT2_0,seasonal=FALSE)
 cIT2_0_ARIMA_pred <- forecast(cIT2_0_ARIMA,P)
+```
+### Exponential Smoothing
+We tried 8 models of Exponential Smoothing (ETS) but will only take 4 into account for the further prediction models which are additive and multiplicative with and without dampening: AAN, MMN, AMND, MMND 
 
+Indeed, the death curve is cumulative and so there will be no seasonality.
+```{r, echo=FALSE}
 par(mfrow=c(2,2)) # This command sets the plot window to show 1 row of 4 plots
 plot(cIT2_0_AAN_pred, xlab="Year", ylab="Ac. deaths", ylim=c(0,10000))
 plot(cIT2_0_MMN_pred, xlab="Year", ylab="Ac. deaths", ylim=c(0,10000))
@@ -191,7 +181,9 @@ plot(cIT2_0_AAND_pred, xlab="Year", ylab="Ac. deaths", ylim=c(0,10000))
 plot(cIT2_0_MMND_pred, xlab="Year", ylab="Ac. deaths", ylim=c(0,10000))
 plot(cIT2_0_AAZD_pred, xlab="Year", ylab="Ac. deaths", ylim=c(0,10000))
 plot(cIT2_0_MMZD_pred, xlab="Year", ylab="Ac. deaths", ylim=c(0,10000))
-
+```
+The 4 ETS Models to retain are the following:
+```{r, echo=FALSE}
 par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
 plot(cIT2_0_AAN_pred, xlab="Time", ylab="Ac. deaths (Italy)", ylim=c(0,10000))
 lines(cIT3, col="red")
@@ -207,11 +199,21 @@ lines(cIT3, col="red")
 par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
 plot(cIT2_0_MMND_pred, xlab="Time", ylab="Ac. deaths (Italy)", ylim=c(0,10000))
 lines(cIT3, col="red")
+```
 
+### TBATS
+
+Decomposition model trigonometric TBATS. TBATS will become BATS because of no seasonality so no need for trigonomectric adjustment. 
+```{r, echo=FALSE}
 par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
 plot(cIT2_0_tbats_pred, xlab="Time", ylab="Ac. deaths (Italy)")
 lines(cIT3, col="red")
+```
 
+### Auto-regressive Method ARIMA
+
+We will finally select the model that fits the best for the first country and will further reproduce the same process other countries. Finally we will present 3 best plots for each country
+```{r, echo=FALSE}
 par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
 plot(cIT2_0_ARIMA_pred, xlab="Time", ylab="Ac. deaths (Italy)")
 lines(cIT3, col="red")
@@ -219,8 +221,9 @@ lines(cIT3, col="red")
 
 ```
 
-```{r}
+### Cross-Validation 
 
+```{r, echo=FALSE}
 ###
 ### Comparing models -- Time series Cross Validation (Rolling Horizon Holdout)
 ###
@@ -253,7 +256,9 @@ errors_ARIMA <- tsCV(cIT2_0, f_ARIMA, h=1, window=15)
 #lines(errors_TBATS, col="grey")
 #lines(errors_ARIMA, col="orange")
 #legend("left", legend=c("CV_error_AANF", "CV_error_MMNF","CV_error_AAND","CV_error_MMND", "CV_error_TBATS", "CV_error_ARIMA"), #col=c("black", "red", "green", "blue", "grey", "orange"), lty=1:4)
+```
 
+```{r, echo=TRUE}
 mean(abs(errors_AANF/cIT2_0), na.rm=TRUE)*100
 mean(abs(errors_MMNF/cIT2_0), na.rm=TRUE)*100
 mean(abs(errors_AAND/cIT2_0), na.rm=TRUE)*100
@@ -262,8 +267,7 @@ mean(abs(errors_TBATS/cIT2_0), na.rm=TRUE)*100
 mean(abs(errors_ARIMA/cIT2_0), na.rm=TRUE)*100
 
 ```
-Best model is MMNF for Italy:
-
+Best model is MMN for Italy
 ```{r, echo=FALSE}
 par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
 plot(cIT2_0_MMN_pred, xlab="Time", ylab="Ac. deaths (Italy)", ylim=c(0,10000))
@@ -271,7 +275,7 @@ lines(cIT3, col="red")
 ```
 
 
-#### France at Lock Down Date
+### France at Lockdown Date
 
 ```{r, echo=FALSE}
 library(forecast)
@@ -305,35 +309,34 @@ cFRA2_0_ARIMA <- auto.arima(cFRA2_0,seasonal=FALSE)
 cFRA2_0_ARIMA_pred <- forecast(cFRA2_0_ARIMA,P)
 
 
-par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
-plot(cFRA2_0_AAN_pred, xlab="Time", ylab="Ac. deaths (FR)", ylim=c(0,10000))
-lines(cFRA3, col="red")
+#par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+#plot(cFRA2_0_AAN_pred, xlab="Time", ylab="Ac. deaths (FR)", ylim=c(0,10000))
+#lines(cFRA3, col="red")
 
-par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
-plot(cFRA2_0_MMN_pred, xlab="Time", ylab="Ac. deaths (FR)", ylim=c(0,10000))
-lines(cFRA3, col="red")
+#par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+#plot(cFRA2_0_MMN_pred, xlab="Time", ylab="Ac. deaths (FR)", ylim=c(0,10000))
+#lines(cFRA3, col="red")
 
-par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
-plot(cFRA2_0_AAND_pred, xlab="Time", ylab="Ac. deaths (FR)", ylim=c(0,10000))
-lines(cFRA3, col="red")
+#par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+#plot(cFRA2_0_AAND_pred, xlab="Time", ylab="Ac. deaths (FR)", ylim=c(0,10000))
+#lines(cFRA3, col="red")
 
-par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
-plot(cFRA2_0_MMND_pred, xlab="Time", ylab="Ac. deaths (FR)", ylim=c(0,10000))
-lines(cFRA3, col="red")
+#par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+#plot(cFRA2_0_MMND_pred, xlab="Time", ylab="Ac. deaths (FR)", ylim=c(0,10000))
+#lines(cFRA3, col="red")
 
-par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
-plot(cFRA2_0_tbats_pred, xlab="Time", ylab="Ac. deaths (FR)")
-lines(cFRA3, col="red")
+#par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+#plot(cFRA2_0_tbats_pred, xlab="Time", ylab="Ac. deaths (FR)")
+#lines(cFRA3, col="red")
 
-par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
-plot(cFRA2_0_ARIMA_pred, xlab="Time", ylab="Ac. deaths (FR)")
-lines(cFRA3, col="red")
+#par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+#plot(cFRA2_0_ARIMA_pred, xlab="Time", ylab="Ac. deaths (FR)")
+#lines(cFRA3, col="red")
 
 
 ```
 
-```{r}
-
+```{r, echo=FALSE}
 ###
 ### Comparing models -- Time series Cross Validation (Rolling Horizon Holdout)
 ###
@@ -366,6 +369,10 @@ errors_ARIMA <- tsCV(cFRA2_0, f_ARIMA, h=1, window=15)
 #lines(errors_TBATS, col="grey")
 #lines(errors_ARIMA, col="orange")
 #legend("left", legend=c("CV_error_AANF", "CV_error_MMNF","CV_error_AAND","CV_error_MMND", "CV_error_TBATS", "CV_error_ARIMA"), #col=c("black", "red", "green", "blue", "grey", "orange"), lty=1:4)
+```
+
+
+```{r, echo=FALSE}
 
 mean(abs(errors_AANF/cFRA2_0), na.rm=TRUE)*100
 mean(abs(errors_MMNF/cFRA2_0), na.rm=TRUE)*100
@@ -385,7 +392,7 @@ lines(cFRA3, col="red")
 
 
 
-#### UK at Lock Down Date
+### UK at Lockdown Date
 
 ```{r, echo=FALSE}
 library(forecast)
@@ -430,35 +437,34 @@ cUK2_0_ARIMA_pred <- forecast(cUK2_0_ARIMA,P)
 #plot(cUK2_0_AAZD_pred, xlab="Year", ylab="Ac. deaths", ylim=c(0,10000))
 #plot(cUK2_0_MMZD_pred, xlab="Year", ylab="Ac. deaths", ylim=c(0,10000))
 
-par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
-plot(cUK2_0_AAN_pred, xlab="Time", ylab="Ac. deaths (UK)", ylim=c(0,10000))
-lines(cUK3, col="red")
+#par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+#plot(cUK2_0_AAN_pred, xlab="Time", ylab="Ac. deaths (UK)", ylim=c(0,10000))
+#lines(cUK3, col="red")
 
-par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
-plot(cUK2_0_MMN_pred, xlab="Time", ylab="Ac. deaths (UK)", ylim=c(0,10000))
-lines(cUK3, col="red")
+#par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+#plot(cUK2_0_MMN_pred, xlab="Time", ylab="Ac. deaths (UK)", ylim=c(0,10000))
+#lines(cUK3, col="red")
 
-par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
-plot(cUK2_0_AAND_pred, xlab="Time", ylab="Ac. deaths (UK)", ylim=c(0,10000))
-lines(cUK3, col="red")
+#par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+#plot(cUK2_0_AAND_pred, xlab="Time", ylab="Ac. deaths (UK)", ylim=c(0,10000))
+#lines(cUK3, col="red")
 
-par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
-plot(cUK2_0_MMND_pred, xlab="Time", ylab="Ac. deaths (UK)", ylim=c(0,10000))
-lines(cUK3, col="red")
+#par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+#plot(cUK2_0_MMND_pred, xlab="Time", ylab="Ac. deaths (UK)", ylim=c(0,10000))
+#lines(cUK3, col="red")
 
-par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
-plot(cUK2_0_tbats_pred, xlab="Time", ylab="Ac. deaths (UK)")
-lines(cUK3, col="red")
+#par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+#plot(cUK2_0_tbats_pred, xlab="Time", ylab="Ac. deaths (UK)")
+#lines(cUK3, col="red")
 
-par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
-plot(cUK2_0_ARIMA_pred, xlab="Time", ylab="Ac. deaths (UK)")
-lines(cUK3, col="red")
+#par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+#plot(cUK2_0_ARIMA_pred, xlab="Time", ylab="Ac. deaths (UK)")
+#lines(cUK3, col="red")
 
 
 ```
 
-```{r}
-
+```{r, echo=FALSE}
 ###
 ### Comparing models -- Time series Cross Validation (Rolling Horizon Holdout)
 ###
@@ -491,6 +497,10 @@ errors_ARIMA <- tsCV(cUK2_0, f_ARIMA, h=1, window=15)
 #lines(errors_TBATS, col="grey")
 #lines(errors_ARIMA, col="orange")
 #legend("left", legend=c("CV_error_AANF", "CV_error_MMNF","CV_error_AAND","CV_error_MMND", "CV_error_TBATS", "CV_error_ARIMA"), #col=c("black", "red", "green", "blue", "grey", "orange"), lty=1:4)
+```
+
+
+```{r, echo=FALSE}
 
 mean(abs(errors_AANF/cUK2_0), na.rm=TRUE)*100
 mean(abs(errors_MMNF/cUK2_0), na.rm=TRUE)*100
@@ -508,8 +518,10 @@ plot(cUK2_0_tbats_pred, xlab="Time", ylab="Ac. deaths (UK)", ylim=c(0,10000))
 lines(cUK3, col="red")
 ```
 
+### Predictions 14 days after lockdown
 
-```{r}
+### Italy 14 days after lockdown
+```{r, echo=FALSE}
 library(forecast)
 
 #covid_data<-read.csv(file.choose(), header=TRUE, sep=",")
@@ -626,412 +638,22 @@ legend("left", legend=c("Best fitted model","Real death toll", "Start of Lockdow
 
 ```
 
-## 14 days after lockdown
+
 
 We will further reproduce the same process for France and UK. 
 Finally we obtain the 3 following plots:
 
-
-```{r}
-library(forecast)
-
-####################
-###ITALY ANALYSIS###
-####################
-
-#covid_data<-read.csv(file.choose(), header=TRUE, sep=",")
-
-t0=2020+53/365
-P=15 #predicted days
-#FRA <- ts(covid_data$deaths_IT,start=0, frequency=1)
-cIT <- ts(covid_data$Cdeaths_IT,start=0, frequency=1)
-cIT_14 <- ts(covid_data$Cdeaths_IT[54:83],start=t0, frequency=365) #t=0 @ day69. +14d #before it was starting at 45
-cIT_F <- ts(covid_data$Cdeaths_IT[54:148],start=t0, frequency=365)   # a supprimer 
-
-plot(cIT_F)
-lines(cIT_14, col="red")
-
-cIT_14_AAN <- ets(cIT_14, model="AAN", damped=FALSE)
-cIT_14_AAZ <- ets(cIT_14, model="AAZ", damped=FALSE)
-cIT_14_MMN <- ets(cIT_14, model="MMN", damped=FALSE)
-cIT_14_MMZ <- ets(cIT_14, model="MMZ", damped=FALSE)
-
-cIT_14_AAND <- ets(cIT_14, model="AAN", damped=TRUE)
-cIT_14_AAZD <- ets(cIT_14, model="AAZ", damped=TRUE)
-cIT_14_MMND <- ets(cIT_14, model="MMN", damped=TRUE)
-cIT_14_MMZD <- ets(cIT_14, model="MMZ", damped=TRUE)
-
-# Create their prediction "cones" for 360 months (30 years) into the future with quintile confidence intervals
-cIT_14_AAN_pred <- forecast(cIT_14_AAN, h=30, level=c(0.8, 0.95))
-cIT_14_AAZ_pred <- forecast(cIT_14_AAZ, h=30, level=c(0.8, 0.95))
-cIT_14_MMN_pred <- forecast(cIT_14_MMN, h=30, level=c(0.8, 0.95))
-cIT_14_MMZ_pred <- forecast(cIT_14_MMZ, h=30, level=c(0.8, 0.95))
-
-cIT_14_AAND_pred <- forecast(cIT_14_AAND, h=30, level=c(0.8, 0.95))
-cIT_14_AAZD_pred <- forecast(cIT_14_AAZD, h=30, level=c(0.8, 0.95))
-cIT_14_MMND_pred <- forecast(cIT_14_MMND, h=30, level=c(0.8, 0.95))
-cIT_14_MMZD_pred <- forecast(cIT_14_MMZD, h=30, level=c(0.8, 0.95))
-
-cIT_14_tbats <- tbats(cIT_14)
-cIT_14_tbats_pred <-forecast(cIT_14_tbats, h=30, level=c(0.8, 0.95))
-par(mfrow=c(1,1))
-
-cIT_14_ARIMA <- auto.arima(cIT_14,seasonal=FALSE)
-cIT_14_ARIMA_pred <- forecast(cIT_14_ARIMA,30)
-
-par(mfrow=c(3,2)) # This command sets the plot window to show 1 row of 4 plots
-plot(cIT_14_AAN_pred, xlab="Year", ylab="Acummulated deaths", ylim=c(0,100000))
-lines(cIT_F, col="red")
-plot(cIT_14_MMN_pred, xlab="Year", ylab="Acummulated deaths", ylim=c(0,100000))
-lines(cIT_F, col="red")
-plot(cIT_14_AAND_pred, xlab="Year", ylab="Acummulated deaths", ylim=c(0,100000))
-lines(cIT_F, col="red")
-plot(cIT_14_MMND_pred, xlab="Year", ylab="Acummulated deaths", ylim=c(0,100000))
-lines(cIT_F, col="red")
-plot(cIT_14_tbats_pred, xlab="Year", ylab="Predicted Electric Rate", ylim=c(0,100000))
-lines(cIT_F, col="red")
-plot(cIT_14_ARIMA_pred, ylim=c(0,100000))
-lines(cIT_F, col="red")
-
-###
-### Comparing models -- Time series Cross Validation (Rolling Horizon Holdout)
-###
-
-f_AANF  <- function(y, h) forecast(ets(y, model="AAN"), h = h)
-errors_AANF <- tsCV(cIT_14, f_AANF, h=1, window=15)
-
-f_MMNF<- function(y, h) forecast(ets(y, model="MMN"), h = h)
-errors_MMNF <- tsCV(cIT_14, f_MMNF, h=1, window=15)
-
-f_AAND  <- function(y, h) forecast(ets(y, model="AAN", damped=TRUE), h = h)
-errors_AAND <- tsCV(cIT_14, f_AAND, h=1, window=15)
-
-f_MMND  <- function(y, h) forecast(ets(y, model="MMN", damped=TRUE), h = h)
-errors_MMND <- tsCV(cIT_14, f_MMND, h=1, window=15)
-
-f_TBATS  <- function(y, h) forecast(tbats(y), h = h)
-errors_TBATS <- tsCV(cIT_14, f_TBATS, h=1, window=15)
-
-f_ARIMA  <- function(y, h) forecast(auto.arima(y), h = h)
-errors_ARIMA <- tsCV(cIT_14, f_ARIMA, h=1, window=15)
-
-
-par(mfrow=c(1,1)) 
-plot(errors_AANF, ylab='tsCV errors')
-abline(0,0)
-lines(errors_MMNF, col="red")
-lines(errors_AAND, col="green")
-lines(errors_MMND, col="blue")
-lines(errors_TBATS, col="grey")
-lines(errors_ARIMA, col="orange")
-legend("left", legend=c("CV_error_AANF", "CV_error_MMNF","CV_error_AAND","CV_error_MMND", "CV_error_TBATS", "CV_error_ARIMA"), col=c("black", "red", "green", "blue", "grey", "orange"), lty=1:4)
-
-mean(abs(errors_AANF/cIT_14), na.rm=TRUE)*100
-mean(abs(errors_MMNF/cIT_14), na.rm=TRUE)*100
-mean(abs(errors_AAND/cIT_14), na.rm=TRUE)*100
-mean(abs(errors_MMND/cIT_14), na.rm=TRUE)*100
-mean(abs(errors_TBATS/cIT_14), na.rm=TRUE)*100
-mean(abs(errors_ARIMA/cIT_14), na.rm=TRUE)*100
-```
-Based on the mean errors, we conclude that for Italy, the best model is the MMND model
-
-```{r}
-
-# Print the mean and confidence intervals for the MMZ model
-cIT_14_MMND_pred
-
-# Export the results out
-write.csv(cIT_14_MMND_pred, file = "IT no lockdown+14d (MMND) incl(ARIMA).csv") # export the selected model's predictions into a CSV file
-
-
-
-```
-
-
-We perform the same analysis for France and the UK. We decide to hide the steps performed as they are similar to those done for Italy. The best models for these 2 countries are the MMND and ARIMA models respectively. 
-
-
-
-France  death count analysis 
-
-
-```{r, echo=FALSE}
-#####################
-###France ANALYSIS###
-####################
-
-
-t0=2020+53/365
-#P=15 #predicted days, à supprimer? 
-#cFRA <- ts(covid_data$Cdeaths_IT,start=0, frequency=1)
-cFRA_14 <- ts(covid_data$Cdeaths_IT[58:89],start=t0, frequency=365) #t=0 @ day75. +14d 
-cFRA_F <- ts(covid_data$Cdeaths_IT[58:148],start=t0, frequency=365)   # a supprimer?
-
-plot(cFRA_F)
-lines(cFRA_14, col="red")
-
-cFRA_14_AAN <- ets(cFRA_14, model="AAN", damped=FALSE)
-cFRA_14_AAZ <- ets(cFRA_14, model="AAZ", damped=FALSE)
-cFRA_14_MMN <- ets(cFRA_14, model="MMN", damped=FALSE)
-cFRA_14_MMZ <- ets(cFRA_14, model="MMZ", damped=FALSE)
-
-cFRA_14_AAND <- ets(cFRA_14, model="AAN", damped=TRUE)
-cFRA_14_AAZD <- ets(cFRA_14, model="AAZ", damped=TRUE)
-cFRA_14_MMND <- ets(cFRA_14, model="MMN", damped=TRUE)
-cFRA_14_MMZD <- ets(cFRA_14, model="MMZ", damped=TRUE)
-
-# Create their prediction "cones" for 360 months (30 years) into the future with quintile confidence intervals
-cFRA_14_AAN_pred <- forecast(cFRA_14_AAN, h=30, level=c(0.8, 0.95))
-cFRA_14_AAZ_pred <- forecast(cFRA_14_AAZ, h=30, level=c(0.8, 0.95))
-cFRA_14_MMN_pred <- forecast(cFRA_14_MMN, h=30, level=c(0.8, 0.95))
-cFRA_14_MMZ_pred <- forecast(cFRA_14_MMZ, h=30, level=c(0.8, 0.95))
-
-cFRA_14_AAND_pred <- forecast(cFRA_14_AAND, h=30, level=c(0.8, 0.95))
-cFRA_14_AAZD_pred <- forecast(cFRA_14_AAZD, h=30, level=c(0.8, 0.95))
-cFRA_14_MMND_pred <- forecast(cFRA_14_MMND, h=30, level=c(0.8, 0.95))
-cFRA_14_MMZD_pred <- forecast(cFRA_14_MMZD, h=30, level=c(0.8, 0.95))
-
-cFRA_14_tbats <- tbats(cFRA_14)
-cFRA_14_tbats_pred <-forecast(cFRA_14_tbats, h=30, level=c(0.8, 0.95))
-par(mfrow=c(1,1))
-#plot(cFRA_14_tbats_pred, xlab="Year", ylab="Predicted Electric Rate")
-#lines(cFRA_F, col="red")
-
-cFRA_14_ARIMA <- auto.arima(cFRA_14,seasonal=FALSE)
-cFRA_14_ARIMA_pred <- forecast(cFRA_14_ARIMA,30)
-#plot(cFRA_14_ARIMA_pred)
-#lines(cFRA_F, col="red")
-
-par(mfrow=c(3,2)) # This command sets the plot window to show 1 row of 4 plots
-plot(cFRA_14_AAN_pred, xlab="Year", ylab="Acummulated deaths", ylim=c(0,100000))
-lines(cFRA_F, col="red")
-plot(cFRA_14_MMN_pred, xlab="Year", ylab="Acummulated deaths", ylim=c(0,100000))
-lines(cFRA_F, col="red")
-plot(cFRA_14_AAND_pred, xlab="Year", ylab="Acummulated deaths", ylim=c(0,100000))
-lines(cFRA_F, col="red")
-plot(cFRA_14_MMND_pred, xlab="Year", ylab="Acummulated deaths", ylim=c(0,100000))
-lines(cFRA_F, col="red")
-plot(cFRA_14_tbats_pred, xlab="Year", ylab="Predicted Electric Rate", ylim=c(0,100000))
-lines(cFRA_F, col="red")
-plot(cFRA_14_ARIMA_pred, ylim=c(0,100000))
-lines(cFRA_F, col="red")
-
-###
-### Comparing models -- Time series Cross Validation (Rolling Horizon Holdout)
-###
-
-f_AANF  <- function(y, h) forecast(ets(y, model="AAN"), h = h)
-errors_AANF <- tsCV(cFRA_14, f_AANF, h=1, window=10)
-
-f_MMNF<- function(y, h) forecast(ets(y, model="MMN"), h = h)
-errors_MMNF <- tsCV(cFRA_14, f_MMNF, h=1, window=10)
-
-f_AAND  <- function(y, h) forecast(ets(y, model="AAN", damped=TRUE), h = h)
-errors_AAND <- tsCV(cFRA_14, f_AAND, h=1, window=10)
-
-f_MMND  <- function(y, h) forecast(ets(y, model="MMN", damped=TRUE), h = h)
-errors_MMND <- tsCV(cFRA_14, f_MMND, h=1, window=10)
-
-f_TBATS  <- function(y, h) forecast(tbats(y), h = h)
-errors_TBATS <- tsCV(cFRA_14, f_TBATS, h=1, window=10)
-
-f_ARIMA  <- function(y, h) forecast(auto.arima(y), h = h)
-errors_ARIMA <- tsCV(cFRA_14, f_ARIMA, h=1, window=10)
-
-
-par(mfrow=c(1,1)) 
-plot(errors_AANF, ylab='tsCV errors')
-abline(0,0)
-lines(errors_MMNF, col="red")
-lines(errors_AAND, col="green")
-lines(errors_MMND, col="blue")
-lines(errors_TBATS, col="grey")
-lines(errors_ARIMA, col="orange")
-legend("left", legend=c("CV_error_AANF", "CV_error_MMNF","CV_error_AAND","CV_error_MMND", "CV_error_TBATS", "CV_error_ARIMA"), col=c("black", "red", "green", "blue", "grey", "orange"), lty=1:4)
-
-mean(abs(errors_AANF/cFRA_14), na.rm=TRUE)*100
-mean(abs(errors_MMNF/cFRA_14), na.rm=TRUE)*100
-mean(abs(errors_AAND/cFRA_14), na.rm=TRUE)*100
-mean(abs(errors_MMND/cFRA_14), na.rm=TRUE)*100
-mean(abs(errors_TBATS/cFRA_14), na.rm=TRUE)*100
-mean(abs(errors_ARIMA/cFRA_14), na.rm=TRUE)*100
-
-```
-
-Based on the mean errors, we conclude that for France the best model is the TBATS model
-
-```{r, echo=FALSE}
-
-
-# Print the mean and confidence intervals for the MMZ model
-cFRA_14_TBATS_pred
-
-# Export the results out
-write.csv(cFRA_14_TBATS_pred, file = "FRA no lockdown+14d (MMND) incl(ARIMA).csv") # export the selected model's predictions into a CSV file
-
-
-```
-
-UK death count analysis 
-
-
-```{r, echo=FALSE}
-#######################
-#####UK Analysis#######
-#######################
-
-
-t0=2020+53/365
-#P=15 #predicted days, à supprimer? 
-#cUK <- ts(covid_data$Cdeaths_IT,start=0, frequency=1)
-cUK_14 <- ts(covid_data$Cdeaths_IT[68:98],start=t0, frequency=365) #t=0 @ day84. +14d 
-cUK_F <- ts(covid_data$Cdeaths_IT[68:148],start=t0, frequency=365)   # a supprimer?
-
-plot(cUK_F)
-lines(cUK_14, col="red")
-
-cUK_14_AAN <- ets(cUK_14, model="AAN", damped=FALSE)
-cUK_14_AAZ <- ets(cUK_14, model="AAZ", damped=FALSE)
-cUK_14_MMN <- ets(cUK_14, model="MMN", damped=FALSE)
-cUK_14_MMZ <- ets(cUK_14, model="MMZ", damped=FALSE)
-
-cUK_14_AAND <- ets(cUK_14, model="AAN", damped=TRUE)
-cUK_14_AAZD <- ets(cUK_14, model="AAZ", damped=TRUE)
-cUK_14_MMND <- ets(cUK_14, model="MMN", damped=TRUE)
-cUK_14_MMZD <- ets(cUK_14, model="MMZ", damped=TRUE)
-
-# Create their prediction "cones" for 360 months (30 years) into the future with quintile confidence intervals
-cUK_14_AAN_pred <- forecast(cUK_14_AAN, h=30, level=c(0.8, 0.95))
-cUK_14_AAZ_pred <- forecast(cUK_14_AAZ, h=30, level=c(0.8, 0.95))
-cUK_14_MMN_pred <- forecast(cUK_14_MMN, h=30, level=c(0.8, 0.95))
-cUK_14_MMZ_pred <- forecast(cUK_14_MMZ, h=30, level=c(0.8, 0.95))
-
-cUK_14_AAND_pred <- forecast(cUK_14_AAND, h=30, level=c(0.8, 0.95))
-cUK_14_AAZD_pred <- forecast(cUK_14_AAZD, h=30, level=c(0.8, 0.95))
-cUK_14_MMND_pred <- forecast(cUK_14_MMND, h=30, level=c(0.8, 0.95))
-cUK_14_MMZD_pred <- forecast(cUK_14_MMZD, h=30, level=c(0.8, 0.95))
-
-cUK_14_tbats <- tbats(cUK_14)
-cUK_14_tbats_pred <-forecast(cUK_14_tbats, h=30, level=c(0.8, 0.95))
-
-
-cUK_14_ARIMA <- auto.arima(cUK_14,seasonal=FALSE)
-cUK_14_ARIMA_pred <- forecast(cUK_14_ARIMA,30)
-
-
-par(mfrow=c(3,2)) # This command sets the plot window to show 1 row of 4 plots
-plot(cUK_14_AAN_pred, xlab="Year", ylab="Acummulated deaths", ylim=c(0,100000))
-lines(cUK_F, col="red")
-plot(cUK_14_MMN_pred, xlab="Year", ylab="Acummulated deaths", ylim=c(0,100000))
-lines(cUK_F, col="red")
-plot(cUK_14_AAND_pred, xlab="Year", ylab="Acummulated deaths", ylim=c(0,100000))
-lines(cUK_F, col="red")
-plot(cUK_14_MMND_pred, xlab="Year", ylab="Acummulated deaths", ylim=c(0,100000))
-lines(cUK_F, col="red")
-plot(cUK_14_tbats_pred, xlab="Year", ylab="Predicted Electric Rate", ylim=c(0,100000))
-lines(cUK_F, col="red")
-plot(cUK_14_ARIMA_pred, ylim=c(0,100000))
-lines(cUK_F, col="red")
-
-###
-### Comparing models -- Time series Cross Validation (Rolling Horizon Holdout)
-###
-
-f_AANF  <- function(y, h) forecast(ets(y, model="AAN"), h = h)
-errors_AANF <- tsCV(cUK_14, f_AANF, h=1, window=10)
-
-f_MMNF<- function(y, h) forecast(ets(y, model="MMN"), h = h)
-errors_MMNF <- tsCV(cUK_14, f_MMNF, h=1, window=10)
-
-f_AAND  <- function(y, h) forecast(ets(y, model="AAN", damped=TRUE), h = h)
-errors_AAND <- tsCV(cUK_14, f_AAND, h=1, window=10)
-
-f_MMND  <- function(y, h) forecast(ets(y, model="MMN", damped=TRUE), h = h)
-errors_MMND <- tsCV(cUK_14, f_MMND, h=1, window=10)
-
-f_TBATS  <- function(y, h) forecast(tbats(y), h = h)
-errors_TBATS <- tsCV(cUK_14, f_TBATS, h=1, window=10)
-
-f_ARIMA  <- function(y, h) forecast(auto.arima(y), h = h)
-errors_ARIMA <- tsCV(cUK_14, f_ARIMA, h=1, window=10)
-
-
-par(mfrow=c(1,1)) 
-plot(errors_AANF, ylab='tsCV errors')
-abline(0,0)
-lines(errors_MMNF, col="red")
-lines(errors_AAND, col="green")
-lines(errors_MMND, col="blue")
-lines(errors_TBATS, col="grey")
-lines(errors_ARIMA, col="orange")
-legend("left", legend=c("CV_error_AANF", "CV_error_MMNF","CV_error_AAND","CV_error_MMND", "CV_error_TBATS", "CV_error_ARIMA"), col=c("black", "red", "green", "blue", "grey", "orange"), lty=1:4)
-
-mean(abs(errors_AANF/cUK_14), na.rm=TRUE)*100
-mean(abs(errors_MMNF/cUK_14), na.rm=TRUE)*100
-mean(abs(errors_AAND/cUK_14), na.rm=TRUE)*100
-mean(abs(errors_MMND/cUK_14), na.rm=TRUE)*100
-mean(abs(errors_TBATS/cUK_14), na.rm=TRUE)*100
-mean(abs(errors_ARIMA/cUK_14), na.rm=TRUE)*100
-
-```
-
-Based on the mean errors, we conclude that for France the best model is the ARIMA model
-
-```{r, echo=FALSE}
-
-
-# Print the mean and confidence intervals for the MMZ model
-cUK_14_ARIMA_pred
-
-# Export the results out
-write.csv(cUK_14_ARIMA_pred, file = "UK no lockdown+14d (MMND) incl(ARIMA).csv") # export the selected model's predictions into a CSV file
-
-```
-After 14 days of lockdown, the projections of death for all countries are: 
-
-```{r}
-########################################
-#########Plot the 3 countries###########
-########################################
-
-
-#expfore<-exp(cIT_14_ARIMA_pred$forecast)
- 
-plot(cIT_14_MMND_pred, xlab="Year", ylab="Italy Acummulated deaths", ylim=c(0,250000))
-lines(cIT_F, col="red")
-abline(v=2020+69/365, col="green")
-legend("left", legend=c("Best fitted model","Real death toll", "Start of Lockdown"), col=c("blue", "red","green"), lty=1)
-
-plot(cFRA_14_TBATS_pred, xlab="Year", ylab="France Acummulated deaths", ylim=c(0,250000))
-lines(cFRA_F, col="red")
-abline(v=2020+69/365, col="green")
-legend("left", legend=c("Best fitted model","Real death toll", "Start of Lockdown"), col=c("blue", "red","green"), lty=1)
-
-plot(cUK_14_ARIMA_pred, xlab="Year", ylab="UK Acummulated deaths", ylim=c(0,250000))
-lines(cUK_F, col="red")
-abline(v=2020+69/365, col="green")
-legend("left", legend=c("Best fitted model","Real death toll", "Start of Lockdown"), col=c("blue", "red","green"), lty=1)
-
-
-#######################
-#########Fin###########
-#######################
-
-
-```
-
-
-## 28 days after lockdown
+## Predictions 28 days after lockdown
 
 We will further reproduce the same process for France and UK. 
 Finally we obtain the 3 following plots:
 
-## 56 days after lockdown 
+## Predictions 56 days after lockdown 
 
 We will further reproduce the same process for France and UK. 
 Finally we obtain the 3 following plots:
 
-# End of Project Proposal
+# 4. Conclusion
 
 By looking at the predicion models, we see that France has adopted the best approach in comparison with Italy and United Kingdom. 
 Helped by the Italian experience, France has pronounced the lockdown before reach a very damageable tipping point. The predicting curve of martality rate at Lockdown date suggests that Italy had taken the least effective measures. 
