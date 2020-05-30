@@ -1,5 +1,5 @@
 ---
-title: "Evaluation of lock-down effect in several European countries"
+title: "Evaluation of lockdown effect in several European countries"
 author: "M. Noujaim, Q. Shi, M. Parashar, A. Bouzid, C. Alvear"
 output:
   html_document:
@@ -23,10 +23,10 @@ always_allow_html: yes
 
 The unfolding, global COVID-19 pandemic is a human crisis of historic scale and complexity. It is straining healthcare systems, government financial capabilities, and the ability of many organizations to cope with the changes wrought by the virus and the response to it. The level of uncertainty for most leaders has been unprecedented, and most of our frameworks for planning and problem solving were unable to manage the geographic variability, uncertainty, and the exponential change brought by the COVID-19 crisis.
 
-Government decisions for lockdown were mainly made by compromising between healthcare capabilities and economic disaster. The timing of governements' initiatives were often ambiguous and have been constantly being revised. 
+Government decisions for lockdown were mainly made by compromising between healthcare capabilities and economic disaster. The timing of governments' initiatives were often ambiguous and have been constantly being revised. 
 
-Mitigate the econonomic impact of the Covid-19 and assess the stringency level of confinement have finally pushed governments to pronounce lockdowns at different moments. 
-If all countries lacked experience in maganing such a crisis, Italian lockdown decision was taken after patient 0 was discovered and after what we commonly call a "tipping point", that is when the virus had already spread fast. French decision was taken a week after Italy. Finally, United Kingdom, in political and economic trouble due to the Brexit situation, waited a week more than France to announce the confinement. 
+Mitigate the economic impact of the Covid-19 and assess the stringency level of confinement have finally pushed governments to pronounce lockdowns at different moments. 
+If all countries lacked experience in managing such a crisis, Italian lockdown decision was taken after patient 0 was discovered and after what we commonly call a "tipping point", that is when the virus had already spread fast. French decision was taken a week after Italy. Finally, United Kingdom, in political and economic trouble due to the Brexit situation, waited a week more than France to announce the confinement. 
 
 How did those delays affected the spread of the virus and mortality?
 How long should be the lockdown period in each country and ultimately which country has best managed the situation?  
@@ -47,11 +47,11 @@ We will put ourselves in the shoes of Government decision makers at different da
 The project methodology is a time-series modeling and implementation to evaluate future mortality. 
 
 Firstly, we want to see how was the situation when the Lockdown was decided. 
-For instance, in the case of Italy, the deaths before the lockdown (until March 9th 2020) were already growing at an exponential rate. So we would first like to see how was the prediction this day and estimate how many lives were saved thanks to the lockdown imposition by comparing the prediciton with the actual data.
+For instance, in the case of Italy, the deaths before the lockdown (until March 9th 2020) were already growing at an exponential rate. So we would first like to see how was the prediction this day and estimate how many lives were saved thanks to the lockdown imposition by comparing the prediction with the actual data.
 
 Secondly, because the virus can incubate for up to 2 weeks before the first symptoms appear, we will also look at the prediction 14 days after the Lockdown decision. With more data available but without the direct impact of the Lockdown (due to the incubation period), this model should have narrower and more accurate confidence interval.  The first two dates will compare early predictions with the real death toll to know how many lives were saved and how the virus contamination was slowed down in each country.
 
-Nevertheless, both first models would note take into account the lockdown effect, which should drastically change the spread of the virus and so further predictions. To do so, we would look at prediction 28 days after the lockdown start which should help measuring the assumed positive effect of lockdown. 
+Nevertheless, both first models would not take into account the lockdown effect, which should drastically change the spread of the virus and so further predictions. To do so, we would look at prediction 28 days after the lockdown start which should help measuring the assumed positive effect of lockdown. 
 
 Finally, the latest prediction, being done 8 weeks after the lockdown date with the latest data available (May 25th), should be a good indicator of the current situation of the crisis and of the level of control and certainty about the pandemic evolution. This will give us insights on how the delay in lockdown dates for each country has affected the spread curve of the Coronavirus over 8 weeks. It will ultimately indicate whether lockdown shall be ended or pursued.
 
@@ -209,9 +209,9 @@ abline(v=2020+69/365, col="green")
 legend("topleft", legend=c("Expected death toll","Used Data", "Start of Lockdown(d=0)"), col=c("blue", "red","green"), lty=1)
 ```
 
-### TBATS
+### TBATS/BATS
 
-Decomposition model trigonometric TBATS. TBATS will become BATS because of no seasonality so no need for trigonomectric adjustment. 
+Decomposition model trigonometric BATS. TBATS will become BATS because of no seasonality so no need for trigonomectric adjustment. 
 ```{r, echo=FALSE}
 par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
 plot(cIT2_0_tbats_pred, xlab="Time", ylab="Ac. deaths (Italy)")
@@ -1283,7 +1283,8 @@ abline(v=2020+84/365, col="green")
 legend("left", legend=c("Best fitted model","Real death toll", "Start of Lockdown"), col=c("blue", "red","green"), lty=1)
 
 ```
-
+In the 14 Days, the confidence interval is narrower. The models tend to be more precise and Italian and English are undervalued when compared to the real results.
+On the other hand, the French predictions was more pessimistic than the actual results. The French very strict restrictions and control must have played a strong effect. 
 
 
 
@@ -1578,7 +1579,7 @@ abline(v=2020+84/365, col="green")
 legend("left", legend=c("Best fitted model","Real death toll", "Start of Lockdown"), col=c("blue", "red","green"), lty=1)
 
 ```
-
+After 28 days, Italian and English model are very stable and very closed to reality. The fact that they are liner explain the narrow confidence interval. While a boom was expected in France, the real curve remained unchanged, demonstrating superior performance in controlling the virus spread. 
 
 ## Predictions 56 days after lockdown 
 
@@ -1894,7 +1895,8 @@ abline(v=2020+84/365, col="green")
 legend("left", legend=c("Best fitted model","Real death toll", "Start of Lockdown"), col=c("blue", "red","green"), lty=1)
 
 ```
-
+After 8 weeks, much more data are available, and the lockdown effect is clearly seen as the three models are linear with almost the same results.
+Overall, the prediction are much more accurate. 
 
 
 # 4. Conclusion
@@ -1911,3 +1913,9 @@ Overall, from an economic perspective, UK might have more to lose by havong wait
 
 Nevertheless, the analysis presents some limitations as we have not taken into account some factors such as the density of the population, nor segmented countries into areas at different level of contamination risks. The stringency of the lockdown has been assumed
 Moreover, economic or political terms have not been taken into account in our analaysis. Indeed, the Brexit and tense political situation might have pushed UK's government to defer the confinement date in order to diminish the economic impact of the covid-19. In France, the confinement has been announced just after political vote. 
+
+In conclusion, we can conclude that the three countries have handled the Covid_19 crisis in different ways but with similar results in term of curves and potential relaunch of the economy in the same period of time after the lockdown.
+
+While different models have been used to predict the death tolls at different period, linear will be the most accurate in the longer term as the situation is stabilized and over control.
+
+The discrepancies in models can be explain by the abrupt switch of curve slope from exponential into a more linear one. The lockdown effectiveness is clearly demonstrated by this study.
