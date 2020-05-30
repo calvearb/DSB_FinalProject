@@ -534,6 +534,13 @@ abline(v=2020+83/365, col="green")
 legend("topleft", legend=c("Expected death toll","Used Data", "Start of Lockdown(d=0)"), col=c("blue", "red","green"), lty=1)
 ```
 
+By looking at the prediction at the different lockdown dates, UK predictions were the most favorable. However the red curve indicates that the death toll was actually much more severe. The main reason for that result is the fact that UK had less data and that the tipping point had not been reached, thus engendering some sort of more linear expectations rather than a classinc exponential pandemic curve. One other reason could be that the English citizen did not act as seriously as French or Italian citizens and that the virus kept spreading fast. 
+
+Concerning Italy, the curve was very preoccupying. Reality was found to be better handled certainly thanks to the right amount of healthcare available to maintain the curve less exponential. 
+
+Finally the rench prediction was quite accurate with the real scenario.
+
+
 
 ### Exponential growth at lockdown date 
 
