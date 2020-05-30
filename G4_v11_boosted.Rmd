@@ -1097,7 +1097,7 @@ legend("left", legend=c("Best fitted model","Real death toll", "Start of Lockdow
 ####################
 
 
-t0=2020+53/365
+t0=2020+57/365
 cFRA_14 <- ts(covid_data$Cdeaths_FRA[58:89],start=t0, frequency=365) #t=0 @ day75. +14d 
 cFRA_F <- ts(covid_data$Cdeaths_FRA[58:148],start=t0, frequency=365)   # a supprimer?
 
@@ -1191,7 +1191,7 @@ legend("left", legend=c("Best fitted model","Real death toll", "Start of Lockdow
 #######################
 
 
-t0=2020+53/365
+t0=2020+67/365
 
 cUK_14 <- ts(covid_data$Cdeaths_UK[68:98],start=t0, frequency=365) #t=0 @ day84. +14d 
 cUK_F <- ts(covid_data$Cdeaths_UK[68:148],start=t0, frequency=365)   # a supprimer?
@@ -1392,7 +1392,7 @@ legend("left", legend=c("Best fitted model","Real death toll", "Start of Lockdow
 ####################
 
 
-t0=2020+53/365
+t0=2020+57/365
 
 cFRA_28 <- ts(covid_data$Cdeaths_FRA[58:103],start=t0, frequency=365) #t=0 @ day75. +28d 
 cFRA_F <- ts(covid_data$Cdeaths_FRA[58:288],start=t0, frequency=365)   # a supprimer?
@@ -1487,7 +1487,7 @@ legend("left", legend=c("Best fitted model","Real death toll", "Start of Lockdow
 #######################
 
 
-t0=2020+53/365
+t0=2020+67/365
 cUK_28 <- ts(covid_data$Cdeaths_UK[68:112],start=t0, frequency=365) #t=0 @ day84. +28d 
 cUK_F <- ts(covid_data$Cdeaths_UK[68:288],start=t0, frequency=365)   # a supprimer?
 
@@ -1691,7 +1691,7 @@ legend("left", legend=c("Best fitted model","Real death toll", "Start of Lockdow
 ####################
 
 
-t0=2020+53/365
+t0=2020+57/365
 
 cFRA_56 <- ts(covid_data$Cdeaths_FRA[58:131],start=t0, frequency=365) #t=0 @ day75. +56d 
 cFRA_F <- ts(covid_data$Cdeaths_FRA[58:288],start=t0, frequency=365)   # a supprimer?
@@ -1794,7 +1794,7 @@ legend("left", legend=c("Best fitted model","Real death toll", "Start of Lockdow
 #######################
 
 
-t0=2020+53/365
+t0=2020+67/365
 cUK_56 <- ts(covid_data$Cdeaths_UK[68:140],start=t0, frequency=365) #t=0 @ day84. +56d 
 cUK_F <- ts(covid_data$Cdeaths_UK[68:288],start=t0, frequency=365)   # a supprimer?
 
