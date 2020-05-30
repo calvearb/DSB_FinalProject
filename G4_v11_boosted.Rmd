@@ -722,9 +722,454 @@ lines(cFRA_F, col="red")
 abline(v=2020+69/365, col="green")
 legend("left", legend=c("Best fitted model","Real death toll", "Start of Lockdown"), col=c("blue", "red","green"), lty=1)
 
+```
+
+
+### Exponential growth at lockdown date 
+
+We can also think and verify that just before the lockdown, the deaths were exponential so we can create an exponential growth models
+
+```{r}
+
+t0_IT=2020+53/365 #day of first casualty
+P=15 #predicted days
+cLIT2_0 <- ts(log(covid_data$Cdeaths_IT[54:69]),start=t0_IT, frequency=365) #t=0 @ day69. +14d #before it was starting at 45
+cLIT3 <- ts(log(covid_data$Cdeaths_IT[54:146]),start=t0_IT, frequency=365)
+
+plot(cLIT3, xlab="Time", ylab="log(Accumulated deaths (FR))")
+lines(cLIT2_0, col="red")
+abline(v=2020+69/365, col="green")
+legend("bottomright", legend=c("Real death toll [log]","Data to use", "Start of Lockdown(d=0)"), col=c("blue", "red","green"), lty=1)
+
+
+
+#French Data
+t0log_FR <- 2020+66/365
+cLFRA2_0 <- ts(log(covid_data$Cdeaths_FRA[67:75]),start=t0log_FR, frequency=365) #t=0 @ day75, March 15th #before it was starting at 45
+cLFRA3 <- ts(log(covid_data$Cdeaths_FRA[67:146]),start=t0log_FR, frequency=365)
+
+plot(cFRA3, xlab="Time", ylab="log(Accumulated deaths (France))")
+lines(cLFRA2_0, col="red")
+abline(v=2020+75/365, col="green")
+legend("bottomright", legend=c("Real death toll [log]","Data to use", "Start of Lockdown(d=0)"), col=c("blue", "red","green"), lty=1)
+
+
+#UK Data
+
+t0_UKlog=2020+68/365
+cLUK2_0 <- ts(log(covid_data$Cdeaths_UK[69:83]),start=t0_UKlog, frequency=365) #t=0 @ day83. +0d
+cLUK3 <- ts(log(covid_data$Cdeaths_UK[69:146]),start=t0_UKlog, frequency=365)
+
+plot(cLUK3, xlab="Time", ylab="log(Accumulated deaths (UK))")
+lines(cLUK2_0, col="red")
+abline(v=2020+83/365, col="green")
+legend("bottomright", legend=c("Real death toll [log]","Data to use", "Start of Lockdown(d=0)"), col=c("blue", "red","green"), lty=1)
 
 
 ```
+
+So before the lockdown, we confirm that the death tolls grow exponentially.
+
+Now, we'll run 6 models for each country (4 ETS models, one TBATS and one ARIMA) and we keep the best fit using minimum absolute error with a rolling horizon cross validation.
+
+#### Italy at Lock Down Date using exponential growth model
+```{r, echo=FALSE}
+library(forecast)
+#FR
+cLIT2_0_AAN <- ets(cLIT2_0, model="AAN", damped=FALSE)
+cLIT2_0_AAZ <- ets(cLIT2_0, model="AAZ", damped=FALSE)
+cLIT2_0_MMN <- ets(cLIT2_0, model="MMN", damped=FALSE)
+cLIT2_0_MMZ <- ets(cLIT2_0, model="MMZ", damped=FALSE)
+
+cLIT2_0_AAND <- ets(cLIT2_0, model="AAN", damped=TRUE)
+cLIT2_0_AAZD <- ets(cLIT2_0, model="AAZ", damped=TRUE)
+cLIT2_0_MMND <- ets(cLIT2_0, model="MMN", damped=TRUE)
+cLIT2_0_MMZD <- ets(cLIT2_0, model="MMZ", damped=TRUE)
+
+
+# Create their prediction "cones" for 360 months (30 years) into the future with quintile confidence intervals
+cLIT2_0_AAN_pred <- forecast(cLIT2_0_AAN, h=P, level=c(0.8, 0.95))
+cLIT2_0_AAZ_pred <- forecast(cLIT2_0_AAZ, h=P, level=c(0.8, 0.95))
+cLIT2_0_MMN_pred <- forecast(cLIT2_0_MMN, h=P, level=c(0.8, 0.95))
+cLIT2_0_MMZ_pred <- forecast(cLIT2_0_MMZ, h=P, level=c(0.8, 0.95))
+
+cLIT2_0_AAND_pred <- forecast(cLIT2_0_AAND, h=P, level=c(0.8, 0.95))
+cLIT2_0_AAZD_pred <- forecast(cLIT2_0_AAZD, h=P, level=c(0.8, 0.95))
+cLIT2_0_MMND_pred <- forecast(cLIT2_0_MMND, h=P, level=c(0.8, 0.95))
+cLIT2_0_MMZD_pred <- forecast(cLIT2_0_MMZD, h=P, level=c(0.8, 0.95))
+
+cLIT2_0_tbats <- tbats(cLIT2_0)
+cLIT2_0_tbats_pred <-forecast(cLIT2_0_tbats, h=P, level=c(0.8, 0.95))
+
+cLIT2_0_ARIMA <- auto.arima(cLIT2_0,seasonal=FALSE)
+cLIT2_0_ARIMA_pred <- forecast(cLIT2_0_ARIMA,P)
+
+
+par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+plot(cLIT2_0_AAN_pred, xlab="Time", ylab="log(Ac. deaths (Italy))", ylim=c(0,20))
+lines(cLIT3, col="red")
+abline(v=2020+69/365, col="green")
+
+par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+plot(cLIT2_0_MMN_pred, xlab="Time", ylab="log(Ac. deaths (Italy))", ylim=c(0,20))
+lines(cLIT3, col="red")
+abline(v=2020+69/365, col="green")
+
+par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+plot(cLIT2_0_AAND_pred, xlab="Time", ylab="log(Ac. deaths (Italy))", ylim=c(0,20))
+lines(cLIT3, col="red")
+abline(v=2020+69/365, col="green")
+
+par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+plot(cLIT2_0_MMND_pred, xlab="Time", ylab="log(Ac. deaths (Italy))", ylim=c(0,20))
+lines(cLIT3, col="red")
+abline(v=2020+69/365, col="green")
+
+par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+plot(cLIT2_0_tbats_pred, xlab="Time", ylab="log(Ac. deaths (Italy))", ylim=c(0,20))
+lines(cLIT3, col="red")
+abline(v=2020+69/365, col="green")
+
+par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+plot(cLIT2_0_ARIMA_pred, xlab="Time", ylab="log(Ac. deaths (Italy))", ylim=c(0,20))
+lines(cLIT3, col="red")
+abline(v=2020+69/365, col="green")
+
+```
+
+```{r, echo=FALSE}
+###
+### Comparing models -- Time series Cross Validation (Rolling Horizon Holdout)
+###
+
+f_AANF  <- function(y, h) forecast(ets(y, model="AAN"), h = h)
+errors_AANF <- tsCV(cLIT2_0, f_AANF, h=1, window=13)
+
+f_MMNF<- function(y, h) forecast(ets(y, model="MMN"), h = h)
+errors_MMNF <- tsCV(cLIT2_0, f_MMNF, h=1, window=13)
+
+f_AAND  <- function(y, h) forecast(ets(y, model="AAN", damped=TRUE), h = h)
+errors_AAND <- tsCV(cLIT2_0, f_AAND, h=1, window=13)
+
+f_MMND  <- function(y, h) forecast(ets(y, model="MMN", damped=TRUE), h = h)
+errors_MMND <- tsCV(cLIT2_0, f_MMND, h=1, window=13)
+
+f_TBATS  <- function(y, h) forecast(tbats(y), h = h)
+errors_TBATS <- tsCV(cLIT2_0, f_TBATS, h=1, window=13)
+
+f_ARIMA  <- function(y, h) forecast(auto.arima(y), h = h)
+errors_ARIMA <- tsCV(cLIT2_0, f_ARIMA, h=1, window=13)
+
+
+#par(mfrow=c(1,1)) 
+#plot(errors_AANF, ylab='tsCV errors')
+#abline(0,0)
+#lines(errors_MMNF, col="red")
+#lines(errors_AAND, col="green")
+#lines(errors_MMND, col="blue")
+#lines(errors_TBATS, col="grey")
+#lines(errors_ARIMA, col="orange")
+#legend("left", legend=c("CV_error_AANF", "CV_error_MMNF","CV_error_AAND","CV_error_MMND", "CV_error_TBATS", "CV_error_ARIMA"), #col=c("black", "red", "green", "blue", "grey", "orange"), lty=1:4)
+```
+
+
+```{r, echo=TRUE}
+mean(abs(errors_AANF/cLIT2_0), na.rm=TRUE)*100
+mean(abs(errors_MMNF/cLIT2_0), na.rm=TRUE)*100
+mean(abs(errors_AAND/cLIT2_0), na.rm=TRUE)*100
+mean(abs(errors_MMND/cLIT2_0), na.rm=TRUE)*100
+mean(abs(errors_TBATS/cLIT2_0), na.rm=TRUE)*100
+mean(abs(errors_ARIMA/cLIT2_0), na.rm=TRUE)*100
+
+```
+Best model is ARIMA for FR:
+
+```{r, echo=FALSE}
+
+par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+plot(cLIT2_0_ARIMA_pred, xlab="Time", ylab="log(Ac. deaths (Italy))", ylim=c(0,20))
+lines(cLIT3, col="red")
+abline(v=2020+69/365, col="green")
+```
+So now let's plot this result in deaths over time
+
+```{r}
+expforeIT_mean<-exp(cLIT2_0_ARIMA_pred$mean)
+
+par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+plot(expforeIT_mean, xlab="Time", ylab="Ac. deaths (FR)", ylim=c(0,1e4))
+lines(cIT3, col="red")
+abline(v=2020+69/365, col="green")
+
+```
+
+
+#### France at Lock Down Date using exponential growth model
+```{r, echo=FALSE}
+library(forecast)
+#FR
+cLFRA2_0_AAN <- ets(cLFRA2_0, model="AAN", damped=FALSE)
+cLFRA2_0_AAZ <- ets(cLFRA2_0, model="AAZ", damped=FALSE)
+cLFRA2_0_MMN <- ets(cLFRA2_0, model="MMN", damped=FALSE)
+cLFRA2_0_MMZ <- ets(cLFRA2_0, model="MMZ", damped=FALSE)
+
+cLFRA2_0_AAND <- ets(cLFRA2_0, model="AAN", damped=TRUE)
+cLFRA2_0_AAZD <- ets(cLFRA2_0, model="AAZ", damped=TRUE)
+cLFRA2_0_MMND <- ets(cLFRA2_0, model="MMN", damped=TRUE)
+cLFRA2_0_MMZD <- ets(cLFRA2_0, model="MMZ", damped=TRUE)
+
+
+# Create their prediction "cones" for 360 months (30 years) into the future with quintile confidence intervals
+cLFRA2_0_AAN_pred <- forecast(cLFRA2_0_AAN, h=P, level=c(0.8, 0.95))
+cLFRA2_0_AAZ_pred <- forecast(cLFRA2_0_AAZ, h=P, level=c(0.8, 0.95))
+cLFRA2_0_MMN_pred <- forecast(cLFRA2_0_MMN, h=P, level=c(0.8, 0.95))
+cLFRA2_0_MMZ_pred <- forecast(cLFRA2_0_MMZ, h=P, level=c(0.8, 0.95))
+
+cLFRA2_0_AAND_pred <- forecast(cLFRA2_0_AAND, h=P, level=c(0.8, 0.95))
+cLFRA2_0_AAZD_pred <- forecast(cLFRA2_0_AAZD, h=P, level=c(0.8, 0.95))
+cLFRA2_0_MMND_pred <- forecast(cLFRA2_0_MMND, h=P, level=c(0.8, 0.95))
+cLFRA2_0_MMZD_pred <- forecast(cLFRA2_0_MMZD, h=P, level=c(0.8, 0.95))
+
+cLFRA2_0_tbats <- tbats(cLFRA2_0)
+cLFRA2_0_tbats_pred <-forecast(cLFRA2_0_tbats, h=P, level=c(0.8, 0.95))
+
+cLFRA2_0_ARIMA <- auto.arima(cLFRA2_0,seasonal=FALSE)
+cLFRA2_0_ARIMA_pred <- forecast(cLFRA2_0_ARIMA,P)
+
+
+#par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+#plot(cLFRA2_0_AAN_pred, xlab="Time", ylab="log(Ac. deaths (FR))", ylim=c(0,20))
+##lines(cLFRA3, col="red")
+#abline(v=2020+75/365, col="green")
+
+#par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+#plot(cLFRA2_0_MMN_pred, xlab="Time", ylab="log(Ac. deaths (FR))", ylim=c(0,20))
+#lines(cLFRA3, col="red")
+#abline(v=2020+75/365, col="green")
+
+#par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+##plot(cLFRA2_0_AAND_pred, xlab="Time", ylab="log(Ac. deaths (FR))", ylim=c(0,20))
+#lines(cLFRA3, col="red")
+##abline(v=2020+75/365, col="green")
+
+#par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+#plot(cLFRA2_0_MMND_pred, xlab="Time", ylab="log(Ac. deaths (FR))", ylim=c(0,20))
+#lines(cLFRA3, col="red")
+#abline(v=2020+75/365, col="green")
+
+#par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+#plot(cLFRA2_0_tbats_pred, xlab="Time", ylab="log(Ac. deaths (FR))", ylim=c(0,20))
+#lines(cLFRA3, col="red")
+#abline(v=2020+75/365, col="green")
+
+#par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+#plot(cLFRA2_0_ARIMA_pred, xlab="Time", ylab="log(Ac. deaths (FR))", ylim=c(0,20))
+#lines(cLFRA3, col="red")
+#abline(v=2020+75/365, col="green")
+
+```
+
+```{r, echo=FALSE}
+###
+### Comparing models -- Time series Cross Validation (Rolling Horizon Holdout)
+###
+
+f_AANF  <- function(y, h) forecast(ets(y, model="AAN"), h = h)
+errors_AANF <- tsCV(cLFRA2_0, f_AANF, h=1, window=8)
+
+f_MMNF<- function(y, h) forecast(ets(y, model="MMN"), h = h)
+errors_MMNF <- tsCV(cLFRA2_0, f_MMNF, h=1, window=8)
+
+f_AAND  <- function(y, h) forecast(ets(y, model="AAN", damped=TRUE), h = h)
+errors_AAND <- tsCV(cLFRA2_0, f_AAND, h=1, window=8)
+
+f_MMND  <- function(y, h) forecast(ets(y, model="MMN", damped=TRUE), h = h)
+errors_MMND <- tsCV(cLFRA2_0, f_MMND, h=1, window=8)
+
+f_TBATS  <- function(y, h) forecast(tbats(y), h = h)
+errors_TBATS <- tsCV(cLFRA2_0, f_TBATS, h=1, window=8)
+
+f_ARIMA  <- function(y, h) forecast(auto.arima(y), h = h)
+errors_ARIMA <- tsCV(cLFRA2_0, f_ARIMA, h=1, window=8)
+
+
+#par(mfrow=c(1,1)) 
+#plot(errors_AANF, ylab='tsCV errors')
+#abline(0,0)
+#lines(errors_MMNF, col="red")
+#lines(errors_AAND, col="green")
+#lines(errors_MMND, col="blue")
+#lines(errors_TBATS, col="grey")
+#lines(errors_ARIMA, col="orange")
+#legend("left", legend=c("CV_error_AANF", "CV_error_MMNF","CV_error_AAND","CV_error_MMND", "CV_error_TBATS", "CV_error_ARIMA"), #col=c("black", "red", "green", "blue", "grey", "orange"), lty=1:4)
+```
+
+
+```{r, echo=TRUE}
+mean(abs(errors_AANF/cLFRA2_0), na.rm=TRUE)*100
+mean(abs(errors_MMNF/cLFRA2_0), na.rm=TRUE)*100
+mean(abs(errors_AAND/cLFRA2_0), na.rm=TRUE)*100
+mean(abs(errors_MMND/cLFRA2_0), na.rm=TRUE)*100
+mean(abs(errors_TBATS/cLFRA2_0), na.rm=TRUE)*100
+mean(abs(errors_ARIMA/cLFRA2_0), na.rm=TRUE)*100
+
+```
+Best model is ARIMA for FR:
+
+```{r, echo=FALSE}
+
+par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+plot(cLFRA2_0_ARIMA_pred, xlab="Time", ylab="log(Ac. deaths (FR))", ylim=c(0,20))
+lines(cLFRA3, col="red")
+abline(v=2020+75/365, col="green")
+```
+So now let's plot this result in deaths over time
+
+```{r}
+expforeFRA_mean<-exp(cLFRA2_0_ARIMA_pred$mean)
+
+par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+plot(expforeFRA_mean, xlab="Time", ylab="Ac. deaths (FR)", ylim=c(0,1e4))
+abline(v=2020+75/365, col="green")
+lines(cFRA3, col="red")
+
+
+
+```
+
+#### UK at Lock Down Date using exponential growth model
+```{r, echo=FALSE}
+library(forecast)
+#UK
+cLUK2_0_AAN <- ets(cLUK2_0, model="AAN", damped=FALSE)
+cLUK2_0_AAZ <- ets(cLUK2_0, model="AAZ", damped=FALSE)
+cLUK2_0_MMN <- ets(cLUK2_0, model="MMN", damped=FALSE)
+cLUK2_0_MMZ <- ets(cLUK2_0, model="MMZ", damped=FALSE)
+
+cLUK2_0_AAND <- ets(cLUK2_0, model="AAN", damped=TRUE)
+cLUK2_0_AAZD <- ets(cLUK2_0, model="AAZ", damped=TRUE)
+cLUK2_0_MMND <- ets(cLUK2_0, model="MMN", damped=TRUE)
+cLUK2_0_MMZD <- ets(cLUK2_0, model="MMZ", damped=TRUE)
+
+
+# Create their prediction "cones" for 360 months (30 years) into the future with quintile confidence intervals
+cLUK2_0_AAN_pred <- forecast(cLUK2_0_AAN, h=P, level=c(0.8, 0.95))
+cLUK2_0_AAZ_pred <- forecast(cLUK2_0_AAZ, h=P, level=c(0.8, 0.95))
+cLUK2_0_MMN_pred <- forecast(cLUK2_0_MMN, h=P, level=c(0.8, 0.95))
+cLUK2_0_MMZ_pred <- forecast(cLUK2_0_MMZ, h=P, level=c(0.8, 0.95))
+
+cLUK2_0_AAND_pred <- forecast(cLUK2_0_AAND, h=P, level=c(0.8, 0.95))
+cLUK2_0_AAZD_pred <- forecast(cLUK2_0_AAZD, h=P, level=c(0.8, 0.95))
+cLUK2_0_MMND_pred <- forecast(cLUK2_0_MMND, h=P, level=c(0.8, 0.95))
+cLUK2_0_MMZD_pred <- forecast(cLUK2_0_MMZD, h=P, level=c(0.8, 0.95))
+
+cLUK2_0_tbats <- tbats(cLUK2_0)
+cLUK2_0_tbats_pred <-forecast(cLUK2_0_tbats, h=P, level=c(0.8, 0.95))
+
+cLUK2_0_ARIMA <- auto.arima(cLUK2_0,seasonal=FALSE)
+cLUK2_0_ARIMA_pred <- forecast(cLUK2_0_ARIMA,P)
+
+
+#par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+#plot(cLUK2_0_AAN_pred, xlab="Time", ylab="log(Ac. deaths (UK))", ylim=c(0,20))
+##lines(cLUK3, col="red")
+#abline(v=2020+75/365, col="green")
+
+#par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+#plot(cLUK2_0_MMN_pred, xlab="Time", ylab="log(Ac. deaths (UK))", ylim=c(0,20))
+#lines(cLUK3, col="red")
+#abline(v=2020+75/365, col="green")
+
+#par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+##plot(cLUK2_0_AAND_pred, xlab="Time", ylab="log(Ac. deaths (UK))", ylim=c(0,20))
+#lines(cLUK3, col="red")
+##abline(v=2020+75/365, col="green")
+
+#par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+#plot(cLUK2_0_MMND_pred, xlab="Time", ylab="log(Ac. deaths (UK))", ylim=c(0,20))
+#lines(cLUK3, col="red")
+#abline(v=2020+75/365, col="green")
+
+#par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+#plot(cLUK2_0_tbats_pred, xlab="Time", ylab="log(Ac. deaths (UK))", ylim=c(0,20))
+#lines(cLUK3, col="red")
+#abline(v=2020+75/365, col="green")
+
+#par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+#plot(cLUK2_0_ARIMA_pred, xlab="Time", ylab="log(Ac. deaths (UK))", ylim=c(0,20))
+#lines(cLUK3, col="red")
+#abline(v=2020+75/365, col="green")
+
+```
+
+```{r, echo=FALSE}
+###
+### Comparing models -- Time series Cross Validation (Rolling Horizon Holdout)
+###
+
+f_AANF  <- function(y, h) forecast(ets(y, model="AAN"), h = h)
+errors_AANF <- tsCV(cLUK2_0, f_AANF, h=1, window=12)
+
+f_MMNF<- function(y, h) forecast(ets(y, model="MMN"), h = h)
+errors_MMNF <- tsCV(cLUK2_0, f_MMNF, h=1, window=12)
+
+f_AAND  <- function(y, h) forecast(ets(y, model="AAN", damped=TRUE), h = h)
+errors_AAND <- tsCV(cLUK2_0, f_AAND, h=1, window=12)
+
+f_MMND  <- function(y, h) forecast(ets(y, model="MMN", damped=TRUE), h = h)
+errors_MMND <- tsCV(cLUK2_0, f_MMND, h=1, window=12)
+
+f_TBATS  <- function(y, h) forecast(tbats(y), h = h)
+errors_TBATS <- tsCV(cLUK2_0, f_TBATS, h=1, window=12)
+
+f_ARIMA  <- function(y, h) forecast(auto.arima(y), h = h)
+errors_ARIMA <- tsCV(cLUK2_0, f_ARIMA, h=1, window=12)
+
+
+#par(mfrow=c(1,1)) 
+#plot(errors_AANF, ylab='tsCV errors')
+#abline(0,0)
+#lines(errors_MMNF, col="red")
+#lines(errors_AAND, col="green")
+#lines(errors_MMND, col="blue")
+#lines(errors_TBATS, col="grey")
+#lines(errors_ARIMA, col="orange")
+#legend("left", legend=c("CV_error_AANF", "CV_error_MMNF","CV_error_AAND","CV_error_MMND", "CV_error_TBATS", "CV_error_ARIMA"), #col=c("black", "red", "green", "blue", "grey", "orange"), lty=1:4)
+```
+
+
+```{r, echo=TRUE}
+mean(abs(errors_AANF/cLUK2_0), na.rm=TRUE)*100
+mean(abs(errors_MMNF/cLUK2_0), na.rm=TRUE)*100
+mean(abs(errors_AAND/cLUK2_0), na.rm=TRUE)*100
+mean(abs(errors_MMND/cLUK2_0), na.rm=TRUE)*100
+mean(abs(errors_TBATS/cLUK2_0), na.rm=TRUE)*100
+mean(abs(errors_ARIMA/cLUK2_0), na.rm=TRUE)*100
+
+```
+Best model is ARIMA for UK:
+
+```{r, echo=FALSE}
+
+par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+plot(cLUK2_0_ARIMA_pred, xlab="Time", ylab="log(Ac. deaths (FR))", ylim=c(0,20))
+lines(cLUK3, col="red")
+abline(v=2020+83/365, col="green")
+```
+So now let's plot this result in deaths over time
+
+```{r}
+expforeFRA_mean<-exp(cLUK2_0_ARIMA_pred$mean)
+
+par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
+plot(expforeFRA_mean, xlab="Time", ylab="Ac. deaths (FR)", ylim=c(0,1e4))
+abline(v=2020+83/365, col="green")
+lines(cUK3, col="red")
+
+
+
+```
+
 
 
 ### UK: 14 days after lockdown
