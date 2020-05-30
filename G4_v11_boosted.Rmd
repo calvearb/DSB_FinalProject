@@ -386,12 +386,12 @@ errors_ARIMA <- tsCV(cFRA2_0, f_ARIMA, h=1, window=15)
 
 ```{r, echo=FALSE}
 
-mean(abs(errors_AANF/cFRA2_0), na.rm=TRUE)*100
-mean(abs(errors_MMNF/cFRA2_0), na.rm=TRUE)*100
-mean(abs(errors_AAND/cFRA2_0), na.rm=TRUE)*100
-mean(abs(errors_MMND/cFRA2_0), na.rm=TRUE)*100
-mean(abs(errors_TBATS/cFRA2_0), na.rm=TRUE)*100
-mean(abs(errors_ARIMA/cFRA2_0), na.rm=TRUE)*100
+#mean(abs(errors_AANF/cFRA2_0), na.rm=TRUE)*100
+#mean(abs(errors_MMNF/cFRA2_0), na.rm=TRUE)*100
+#mean(abs(errors_AAND/cFRA2_0), na.rm=TRUE)*100
+#mean(abs(errors_MMND/cFRA2_0), na.rm=TRUE)*100
+#mean(abs(errors_TBATS/cFRA2_0), na.rm=TRUE)*100
+#mean(abs(errors_ARIMA/cFRA2_0), na.rm=TRUE)*100
 
 ```
 Best model is TBATS for France:
@@ -516,12 +516,12 @@ errors_ARIMA <- tsCV(cUK2_0, f_ARIMA, h=1, window=15)
 
 ```{r, echo=FALSE}
 
-mean(abs(errors_AANF/cUK2_0), na.rm=TRUE)*100
-mean(abs(errors_MMNF/cUK2_0), na.rm=TRUE)*100
-mean(abs(errors_AAND/cUK2_0), na.rm=TRUE)*100
-mean(abs(errors_MMND/cUK2_0), na.rm=TRUE)*100
-mean(abs(errors_TBATS/cUK2_0), na.rm=TRUE)*100
-mean(abs(errors_ARIMA/cUK2_0), na.rm=TRUE)*100
+#mean(abs(errors_AANF/cUK2_0), na.rm=TRUE)*100
+#mean(abs(errors_MMNF/cUK2_0), na.rm=TRUE)*100
+#mean(abs(errors_AAND/cUK2_0), na.rm=TRUE)*100
+#mean(abs(errors_MMND/cUK2_0), na.rm=TRUE)*100
+#mean(abs(errors_TBATS/cUK2_0), na.rm=TRUE)*100
+#mean(abs(errors_ARIMA/cUK2_0), na.rm=TRUE)*100
 
 ```
 Best model is BATS for UK:
@@ -539,7 +539,7 @@ legend("topleft", legend=c("Expected death toll","Used Data", "Start of Lockdown
 
 We can also think and verify that just before the lockdown, the deaths were exponential so we can create an exponential growth models
 
-```{r}
+```{r, echo=FALSE}
 
 t0_IT=2020+53/365 #day of first casualty
 P=15 #predicted days
@@ -683,7 +683,7 @@ errors_ARIMA <- tsCV(cLIT2_0, f_ARIMA, h=1, window=13)
 ```
 
 
-```{r, echo=TRUE}
+```{r, echo=FALSE}
 mean(abs(errors_AANF/cLIT2_0), na.rm=TRUE)*100
 mean(abs(errors_MMNF/cLIT2_0), na.rm=TRUE)*100
 mean(abs(errors_AAND/cLIT2_0), na.rm=TRUE)*100
@@ -692,7 +692,7 @@ mean(abs(errors_TBATS/cLIT2_0), na.rm=TRUE)*100
 mean(abs(errors_ARIMA/cLIT2_0), na.rm=TRUE)*100
 
 ```
-Best model is ARIMA for FR:
+Best model is ARIMA for Italy:
 
 ```{r, echo=FALSE}
 
@@ -703,7 +703,7 @@ abline(v=2020+69/365, col="green")
 ```
 So now let's plot this result in deaths over time
 
-```{r}
+```{r, echo=FALSE}
 expforeIT_mean<-exp(cLIT2_0_ARIMA_pred$mean)
 
 par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
@@ -835,7 +835,7 @@ abline(v=2020+75/365, col="green")
 ```
 So now let's plot this result in deaths over time
 
-```{r}
+```{r, echo=FALSE}
 expforeFRA_mean<-exp(cLFRA2_0_ARIMA_pred$mean)
 
 par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
@@ -948,13 +948,13 @@ errors_ARIMA <- tsCV(cLUK2_0, f_ARIMA, h=1, window=12)
 ```
 
 
-```{r, echo=TRUE}
-mean(abs(errors_AANF/cLUK2_0), na.rm=TRUE)*100
-mean(abs(errors_MMNF/cLUK2_0), na.rm=TRUE)*100
-mean(abs(errors_AAND/cLUK2_0), na.rm=TRUE)*100
-mean(abs(errors_MMND/cLUK2_0), na.rm=TRUE)*100
-mean(abs(errors_TBATS/cLUK2_0), na.rm=TRUE)*100
-mean(abs(errors_ARIMA/cLUK2_0), na.rm=TRUE)*100
+```{r, echo=FALSE}
+#mean(abs(errors_AANF/cLUK2_0), na.rm=TRUE)*100
+#mean(abs(errors_MMNF/cLUK2_0), na.rm=TRUE)*100
+#mean(abs(errors_AAND/cLUK2_0), na.rm=TRUE)*100
+#mean(abs(errors_MMND/cLUK2_0), na.rm=TRUE)*100
+#mean(abs(errors_TBATS/cLUK2_0), na.rm=TRUE)*100
+#mean(abs(errors_ARIMA/cLUK2_0), na.rm=TRUE)*100
 
 ```
 Best model is ARIMA for UK:
@@ -968,7 +968,7 @@ abline(v=2020+83/365, col="green")
 ```
 So now let's plot this result in deaths over time
 
-```{r}
+```{r, echo=FALSE}
 expforeFRA_mean<-exp(cLUK2_0_ARIMA_pred$mean)
 
 par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
