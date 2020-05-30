@@ -534,17 +534,18 @@ abline(v=2020+83/365, col="green")
 legend("topleft", legend=c("Expected death toll","Used Data", "Start of Lockdown(d=0)"), col=c("blue", "red","green"), lty=1)
 ```
 
-By looking at the prediction at the different lockdown dates, UK predictions were the most favorable. However the red curve indicates that the death toll was actually much more severe. The main reason for that result is the fact that UK had less data and that the tipping point had not been reached, thus engendering some sort of more linear expectations rather than a classinc exponential pandemic curve. One other reason could be that the English citizen did not act as seriously as French or Italian citizens and that the virus kept spreading fast. 
+By looking at the prediction at the different lockdown dates, UK predictions were the most favorable. However the red curve indicates that the death toll was actually much more severe. The main reason for that result is the fact that UK had less data and that the tipping point had not been reached, thus engendering some sort of more linear expectations rather than a classic exponential pandemic curve. One other reason could be that the English citizen did not act as seriously as French or Italian citizens and that the virus kept spreading fast. 
 
 Concerning Italy, the curve was very preoccupying. Reality was found to be better handled certainly thanks to the right amount of healthcare available to maintain the curve less exponential. 
 
-Finally the rench prediction was quite accurate with the real scenario.
+Finally the French prediction was quite accurate with the real scenario.
 
 
 
 ### Exponential growth at lockdown date 
 
-We can also think and verify that just before the lockdown, the deaths were exponential so we can create an exponential growth models
+We can also think and verify that just before the lockdown, the deaths were exponential so we can create exponential growth models with the same data set but with log tranformation. Those models would be the upper limit of the death toll
+Looking at the graphic below, we can say that the slope in the logarith;ic graph has decreased after the lockdown in the three coutries.
 
 ```{r, echo=FALSE}
 
@@ -708,6 +709,7 @@ plot(cLIT2_0_ARIMA_pred, xlab="Time", ylab="log(Ac. deaths (Italy))", ylim=c(0,2
 lines(cLIT3, col="red")
 abline(v=2020+69/365, col="green")
 ```
+
 So now let's plot this result in deaths over time
 
 ```{r, echo=FALSE}
@@ -723,6 +725,7 @@ abline(v=2020+69/365, col="green")
 
 #### France at Lock Down Date using exponential growth model
 ```{r, echo=FALSE}
+
 library(forecast)
 #FR
 cLFRA2_0_AAN <- ets(cLFRA2_0, model="AAN", damped=FALSE)
@@ -823,14 +826,15 @@ errors_ARIMA <- tsCV(cLFRA2_0, f_ARIMA, h=1, window=8)
 
 
 ```{r, echo=TRUE}
-mean(abs(errors_AANF/cLFRA2_0), na.rm=TRUE)*100
-mean(abs(errors_MMNF/cLFRA2_0), na.rm=TRUE)*100
-mean(abs(errors_AAND/cLFRA2_0), na.rm=TRUE)*100
-mean(abs(errors_MMND/cLFRA2_0), na.rm=TRUE)*100
-mean(abs(errors_TBATS/cLFRA2_0), na.rm=TRUE)*100
-mean(abs(errors_ARIMA/cLFRA2_0), na.rm=TRUE)*100
+#mean(abs(errors_AANF/cLFRA2_0), na.rm=TRUE)*100
+#mean(abs(errors_MMNF/cLFRA2_0), na.rm=TRUE)*100
+#mean(abs(errors_AAND/cLFRA2_0), na.rm=TRUE)*100
+#mean(abs(errors_MMND/cLFRA2_0), na.rm=TRUE)*100
+#mean(abs(errors_TBATS/cLFRA2_0), na.rm=TRUE)*100
+#mean(abs(errors_ARIMA/cLFRA2_0), na.rm=TRUE)*100
 
 ```
+
 Best model is ARIMA for FR:
 
 ```{r, echo=FALSE}
@@ -840,6 +844,7 @@ plot(cLFRA2_0_ARIMA_pred, xlab="Time", ylab="log(Ac. deaths (FR))", ylim=c(0,20)
 lines(cLFRA3, col="red")
 abline(v=2020+75/365, col="green")
 ```
+
 So now let's plot this result in deaths over time
 
 ```{r, echo=FALSE}
@@ -973,6 +978,7 @@ plot(cLUK2_0_ARIMA_pred, xlab="Time", ylab="log(Ac. deaths (FR))", ylim=c(0,20))
 lines(cLUK3, col="red")
 abline(v=2020+83/365, col="green")
 ```
+
 So now let's plot this result in deaths over time
 
 ```{r, echo=FALSE}
@@ -986,6 +992,9 @@ lines(cUK3, col="red")
 
 
 ```
+
+Those exponential models can be a good prediction in the short term ie one week due to the delay in the incubation period of the virus although they are not good models for longer period such as one month.
+
 
 ## Predictions: 14 days after lockdown
 
