@@ -187,18 +187,26 @@ The 4 ETS Models to retain are the following:
 par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
 plot(cIT2_0_AAN_pred, xlab="Time", ylab="Ac. deaths (Italy)", ylim=c(0,10000))
 lines(cIT3, col="red")
+abline(v=2020+69/365, col="green")
+legend("topleft", legend=c("Expected death toll","Used Data", "Start of Lockdown(d=0)"), col=c("blue", "red","green"), lty=1)
 
 par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
 plot(cIT2_0_MMN_pred, xlab="Time", ylab="Ac. deaths (Italy)", ylim=c(0,10000))
 lines(cIT3, col="red")
+abline(v=2020+69/365, col="green")
+legend("topleft", legend=c("Expected death toll","Used Data", "Start of Lockdown(d=0)"), col=c("blue", "red","green"), lty=1)
 
 par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
 plot(cIT2_0_AAND_pred, xlab="Time", ylab="Ac. deaths (Italy)", ylim=c(0,10000))
 lines(cIT3, col="red")
+abline(v=2020+69/365, col="green")
+legend("topleft", legend=c("Expected death toll","Used Data", "Start of Lockdown(d=0)"), col=c("blue", "red","green"), lty=1)
 
 par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
 plot(cIT2_0_MMND_pred, xlab="Time", ylab="Ac. deaths (Italy)", ylim=c(0,10000))
 lines(cIT3, col="red")
+abline(v=2020+69/365, col="green")
+legend("topleft", legend=c("Expected death toll","Used Data", "Start of Lockdown(d=0)"), col=c("blue", "red","green"), lty=1)
 ```
 
 ### TBATS
@@ -208,6 +216,8 @@ Decomposition model trigonometric TBATS. TBATS will become BATS because of no se
 par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
 plot(cIT2_0_tbats_pred, xlab="Time", ylab="Ac. deaths (Italy)")
 lines(cIT3, col="red")
+abline(v=2020+69/365, col="green")
+legend("topleft", legend=c("Expected death toll","Used Data", "Start of Lockdown(d=0)"), col=c("blue", "red","green"), lty=1)
 ```
 
 ### Auto-regressive Method ARIMA
@@ -217,8 +227,8 @@ We will finally select the model that fits the best for the first country and wi
 par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
 plot(cIT2_0_ARIMA_pred, xlab="Time", ylab="Ac. deaths (Italy)")
 lines(cIT3, col="red")
-
-
+abline(v=2020+69/365, col="green")
+legend("topleft", legend=c("Expected death toll","Used Data", "Start of Lockdown(d=0)"), col=c("blue", "red","green"), lty=1)
 ```
 
 ### Cross-Validation 
@@ -272,6 +282,8 @@ Best model is MMN for Italy
 par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
 plot(cIT2_0_MMN_pred, xlab="Time", ylab="Ac. deaths (Italy)", ylim=c(0,10000))
 lines(cIT3, col="red")
+abline(v=2020+69/365, col="green")
+legend("topleft", legend=c("Expected death toll","Used Data", "Start of Lockdown(d=0)"), col=c("blue", "red","green"), lty=1)
 ```
 
 
@@ -388,6 +400,8 @@ Best model is TBATS for France:
 par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
 plot(cFRA2_0_tbats_pred, xlab="Time", ylab="Ac. deaths (FR)", ylim=c(0,10000))
 lines(cFRA3, col="red")
+abline(v=2020+75/365, col="green")
+legend("topleft", legend=c("Expected death toll","Used Data", "Start of Lockdown(d=0)"), col=c("blue", "red","green"), lty=1)
 ```
 
 
@@ -516,6 +530,8 @@ Best model is BATS for UK:
 par(mfrow=c(1,1)) # This command sets the plot window to show 1 row of 1 plots
 plot(cUK2_0_tbats_pred, xlab="Time", ylab="Ac. deaths (UK)", ylim=c(0,10000))
 lines(cUK3, col="red")
+abline(v=2020+83/365, col="green")
+legend("topleft", legend=c("Expected death toll","Used Data", "Start of Lockdown(d=0)"), col=c("blue", "red","green"), lty=1)
 ```
 
 ### Predictions 14 days after lockdown
