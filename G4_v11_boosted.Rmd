@@ -534,196 +534,6 @@ abline(v=2020+83/365, col="green")
 legend("topleft", legend=c("Expected death toll","Used Data", "Start of Lockdown(d=0)"), col=c("blue", "red","green"), lty=1)
 ```
 
-## Predictions: 14 days after lockdown
-
-We will further reproduce the same process for the 3 countries. Please note that we would note use the log in this phase as the data is no longer increasing exponentailly.
-
-### Italy: 14 days after lockdown
-
-```{r, echo=FALSE}
-
-library(forecast)
-
-####################
-###ITALY ANALYSIS###
-####################
-
-t0=2020+53/365
-P=15 #predicted days
-
-cIT <- ts(covid_data$Cdeaths_IT,start=0, frequency=1)
-cIT_14 <- ts(covid_data$Cdeaths_IT[54:83],start=t0, frequency=365) #t=0 @ day69. +14d #before it was starting at 45
-cIT_F <- ts(covid_data$Cdeaths_IT[54:148],start=t0, frequency=365)   # a supprimer 
-
-cIT_14_AAN <- ets(cIT_14, model="AAN", damped=FALSE)
-cIT_14_AAZ <- ets(cIT_14, model="AAZ", damped=FALSE)
-cIT_14_MMN <- ets(cIT_14, model="MMN", damped=FALSE)
-cIT_14_MMZ <- ets(cIT_14, model="MMZ", damped=FALSE)
-
-cIT_14_AAND <- ets(cIT_14, model="AAN", damped=TRUE)
-cIT_14_AAZD <- ets(cIT_14, model="AAZ", damped=TRUE)
-cIT_14_MMND <- ets(cIT_14, model="MMN", damped=TRUE)
-cIT_14_MMZD <- ets(cIT_14, model="MMZ", damped=TRUE)
-
-# Create their prediction "cones" for 360 months (30 years) into the future with quintile confidence intervals
-cIT_14_AAN_pred <- forecast(cIT_14_AAN, h=30, level=c(0.8, 0.95))
-cIT_14_AAZ_pred <- forecast(cIT_14_AAZ, h=30, level=c(0.8, 0.95))
-cIT_14_MMN_pred <- forecast(cIT_14_MMN, h=30, level=c(0.8, 0.95))
-cIT_14_MMZ_pred <- forecast(cIT_14_MMZ, h=30, level=c(0.8, 0.95))
-
-cIT_14_AAND_pred <- forecast(cIT_14_AAND, h=30, level=c(0.8, 0.95))
-cIT_14_AAZD_pred <- forecast(cIT_14_AAZD, h=30, level=c(0.8, 0.95))
-cIT_14_MMND_pred <- forecast(cIT_14_MMND, h=30, level=c(0.8, 0.95))
-cIT_14_MMZD_pred <- forecast(cIT_14_MMZD, h=30, level=c(0.8, 0.95))
-
-cIT_14_tbats <- tbats(cIT_14)
-cIT_14_tbats_pred <-forecast(cIT_14_tbats, h=30, level=c(0.8, 0.95))
-par(mfrow=c(1,1))
-
-cIT_14_ARIMA <- auto.arima(cIT_14,seasonal=FALSE)
-cIT_14_ARIMA_pred <- forecast(cIT_14_ARIMA,30)
-
-
-
-###
-### Comparing models -- Time series Cross Validation (Rolling Horizon Holdout)
-###
-
-f_AANF  <- function(y, h) forecast(ets(y, model="AAN"), h = h)
-errors_AANF <- tsCV(cIT_14, f_AANF, h=1, window=15)
-
-f_MMNF<- function(y, h) forecast(ets(y, model="MMN"), h = h)
-errors_MMNF <- tsCV(cIT_14, f_MMNF, h=1, window=15)
-
-f_AAND  <- function(y, h) forecast(ets(y, model="AAN", damped=TRUE), h = h)
-errors_AAND <- tsCV(cIT_14, f_AAND, h=1, window=15)
-
-f_MMND  <- function(y, h) forecast(ets(y, model="MMN", damped=TRUE), h = h)
-errors_MMND <- tsCV(cIT_14, f_MMND, h=1, window=15)
-
-f_TBATS  <- function(y, h) forecast(tbats(y), h = h)
-errors_TBATS <- tsCV(cIT_14, f_TBATS, h=1, window=15)
-
-f_ARIMA  <- function(y, h) forecast(auto.arima(y), h = h)
-errors_ARIMA <- tsCV(cIT_14, f_ARIMA, h=1, window=15)
-
-#mean(abs(errors_AANF/cIT_14), na.rm=TRUE)*100
-#mean(abs(errors_MMNF/cIT_14), na.rm=TRUE)*100
-#mean(abs(errors_AAND/cIT_14), na.rm=TRUE)*100
-#mean(abs(errors_MMND/cIT_14), na.rm=TRUE)*100
-#mean(abs(errors_TBATS/cIT_14), na.rm=TRUE)*100
-#mean(abs(errors_ARIMA/cIT_14), na.rm=TRUE)*100
-
-```
-Based on the mean errors, we conclude that for Italy, the best model is the MMND model. 
-
-
-```{r, echo=FALSE}
-
-# Export the results out
-write.csv(cIT_14_MMND_pred, file = "IT no lockdown+14d (MMND) .csv") # export the selected model's predictions into a CSV file
-
-plot(cIT_14_MMND_pred, xlab="Year", ylab="Italy Acummulated deaths", ylim=c(0,100000))
-lines(cIT_F, col="red")
-abline(v=2020+69/365, col="green")
-legend("left", legend=c("Best fitted model","Real death toll", "Start of Lockdown"), col=c("blue", "red","green"), lty=1)
-
-
-```
-
-
-### France: 14 days after lockdown
-
-
-```{r, echo=FALSE}
-#####################
-###France ANALYSIS###
-####################
-
-
-t0=2020+53/365
-cFRA_14 <- ts(covid_data$Cdeaths_IT[58:89],start=t0, frequency=365) #t=0 @ day75. +14d 
-cFRA_F <- ts(covid_data$Cdeaths_IT[58:148],start=t0, frequency=365)   # a supprimer?
-
-
-cFRA_14_AAN <- ets(cFRA_14, model="AAN", damped=FALSE)
-cFRA_14_AAZ <- ets(cFRA_14, model="AAZ", damped=FALSE)
-cFRA_14_MMN <- ets(cFRA_14, model="MMN", damped=FALSE)
-cFRA_14_MMZ <- ets(cFRA_14, model="MMZ", damped=FALSE)
-
-cFRA_14_AAND <- ets(cFRA_14, model="AAN", damped=TRUE)
-cFRA_14_AAZD <- ets(cFRA_14, model="AAZ", damped=TRUE)
-cFRA_14_MMND <- ets(cFRA_14, model="MMN", damped=TRUE)
-cFRA_14_MMZD <- ets(cFRA_14, model="MMZ", damped=TRUE)
-
-# Create their prediction "cones" for 360 months (30 years) into the future with quintile confidence intervals
-cFRA_14_AAN_pred <- forecast(cFRA_14_AAN, h=30, level=c(0.8, 0.95))
-cFRA_14_AAZ_pred <- forecast(cFRA_14_AAZ, h=30, level=c(0.8, 0.95))
-cFRA_14_MMN_pred <- forecast(cFRA_14_MMN, h=30, level=c(0.8, 0.95))
-cFRA_14_MMZ_pred <- forecast(cFRA_14_MMZ, h=30, level=c(0.8, 0.95))
-
-cFRA_14_AAND_pred <- forecast(cFRA_14_AAND, h=30, level=c(0.8, 0.95))
-cFRA_14_AAZD_pred <- forecast(cFRA_14_AAZD, h=30, level=c(0.8, 0.95))
-cFRA_14_MMND_pred <- forecast(cFRA_14_MMND, h=30, level=c(0.8, 0.95))
-cFRA_14_MMZD_pred <- forecast(cFRA_14_MMZD, h=30, level=c(0.8, 0.95))
-
-cFRA_14_tbats <- tbats(cFRA_14)
-cFRA_14_tbats_pred <-forecast(cFRA_14_tbats, h=30, level=c(0.8, 0.95))
-par(mfrow=c(1,1))
-
-cFRA_14_ARIMA <- auto.arima(cFRA_14,seasonal=FALSE)
-cFRA_14_ARIMA_pred <- forecast(cFRA_14_ARIMA,30)
-
-
-###
-### Comparing models -- Time series Cross Validation (Rolling Horizon Holdout)
-###
-
-f_AANF  <- function(y, h) forecast(ets(y, model="AAN"), h = h)
-errors_AANF <- tsCV(cFRA_14, f_AANF, h=1, window=10)
-
-f_MMNF<- function(y, h) forecast(ets(y, model="MMN"), h = h)
-errors_MMNF <- tsCV(cFRA_14, f_MMNF, h=1, window=10)
-
-f_AAND  <- function(y, h) forecast(ets(y, model="AAN", damped=TRUE), h = h)
-errors_AAND <- tsCV(cFRA_14, f_AAND, h=1, window=10)
-
-f_MMND  <- function(y, h) forecast(ets(y, model="MMN", damped=TRUE), h = h)
-errors_MMND <- tsCV(cFRA_14, f_MMND, h=1, window=10)
-
-f_TBATS  <- function(y, h) forecast(tbats(y), h = h)
-errors_TBATS <- tsCV(cFRA_14, f_TBATS, h=1, window=10)
-
-f_ARIMA  <- function(y, h) forecast(auto.arima(y), h = h)
-errors_ARIMA <- tsCV(cFRA_14, f_ARIMA, h=1, window=10)
-
-#mean(abs(errors_AANF/cFRA_14), na.rm=TRUE)*100
-#mean(abs(errors_MMNF/cFRA_14), na.rm=TRUE)*100
-#mean(abs(errors_AAND/cFRA_14), na.rm=TRUE)*100
-#mean(abs(errors_MMND/cFRA_14), na.rm=TRUE)*100
-#mean(abs(errors_TBATS/cFRA_14), na.rm=TRUE)*100
-#mean(abs(errors_ARIMA/cFRA_14), na.rm=TRUE)*100
-
-
-```
-
-Based on the mean errors, we conclude that for France the best model is the TBATS model
-
-
-```{r, echo=FALSE}
-
-
-
-# Export the results out
-write.csv(cFRA_14_tbats_pred, file = "FRA no lockdown+14d (MMND) .csv") # export the selected model's predictions into a CSV file
-
-plot(cFRA_14_tbats_pred, xlab="Year", ylab="France Acummulated deaths", ylim=c(0,100000))
-lines(cFRA_F, col="red")
-abline(v=2020+69/365, col="green")
-legend("left", legend=c("Best fitted model","Real death toll", "Start of Lockdown"), col=c("blue", "red","green"), lty=1)
-
-```
-
 
 ### Exponential growth at lockdown date 
 
@@ -1167,6 +977,196 @@ abline(v=2020+83/365, col="green")
 lines(cUK3, col="red")
 
 
+
+```
+
+## Predictions: 14 days after lockdown
+
+We will further reproduce the same process for the 3 countries. Please note that we would note use the log in this phase as the data is no longer increasing exponentailly.
+
+### Italy: 14 days after lockdown
+
+```{r, echo=FALSE}
+
+library(forecast)
+
+####################
+###ITALY ANALYSIS###
+####################
+
+t0=2020+53/365
+P=15 #predicted days
+
+cIT <- ts(covid_data$Cdeaths_IT,start=0, frequency=1)
+cIT_14 <- ts(covid_data$Cdeaths_IT[54:83],start=t0, frequency=365) #t=0 @ day69. +14d #before it was starting at 45
+cIT_F <- ts(covid_data$Cdeaths_IT[54:148],start=t0, frequency=365)   # a supprimer 
+
+cIT_14_AAN <- ets(cIT_14, model="AAN", damped=FALSE)
+cIT_14_AAZ <- ets(cIT_14, model="AAZ", damped=FALSE)
+cIT_14_MMN <- ets(cIT_14, model="MMN", damped=FALSE)
+cIT_14_MMZ <- ets(cIT_14, model="MMZ", damped=FALSE)
+
+cIT_14_AAND <- ets(cIT_14, model="AAN", damped=TRUE)
+cIT_14_AAZD <- ets(cIT_14, model="AAZ", damped=TRUE)
+cIT_14_MMND <- ets(cIT_14, model="MMN", damped=TRUE)
+cIT_14_MMZD <- ets(cIT_14, model="MMZ", damped=TRUE)
+
+# Create their prediction "cones" for 360 months (30 years) into the future with quintile confidence intervals
+cIT_14_AAN_pred <- forecast(cIT_14_AAN, h=30, level=c(0.8, 0.95))
+cIT_14_AAZ_pred <- forecast(cIT_14_AAZ, h=30, level=c(0.8, 0.95))
+cIT_14_MMN_pred <- forecast(cIT_14_MMN, h=30, level=c(0.8, 0.95))
+cIT_14_MMZ_pred <- forecast(cIT_14_MMZ, h=30, level=c(0.8, 0.95))
+
+cIT_14_AAND_pred <- forecast(cIT_14_AAND, h=30, level=c(0.8, 0.95))
+cIT_14_AAZD_pred <- forecast(cIT_14_AAZD, h=30, level=c(0.8, 0.95))
+cIT_14_MMND_pred <- forecast(cIT_14_MMND, h=30, level=c(0.8, 0.95))
+cIT_14_MMZD_pred <- forecast(cIT_14_MMZD, h=30, level=c(0.8, 0.95))
+
+cIT_14_tbats <- tbats(cIT_14)
+cIT_14_tbats_pred <-forecast(cIT_14_tbats, h=30, level=c(0.8, 0.95))
+par(mfrow=c(1,1))
+
+cIT_14_ARIMA <- auto.arima(cIT_14,seasonal=FALSE)
+cIT_14_ARIMA_pred <- forecast(cIT_14_ARIMA,30)
+
+
+
+###
+### Comparing models -- Time series Cross Validation (Rolling Horizon Holdout)
+###
+
+f_AANF  <- function(y, h) forecast(ets(y, model="AAN"), h = h)
+errors_AANF <- tsCV(cIT_14, f_AANF, h=1, window=15)
+
+f_MMNF<- function(y, h) forecast(ets(y, model="MMN"), h = h)
+errors_MMNF <- tsCV(cIT_14, f_MMNF, h=1, window=15)
+
+f_AAND  <- function(y, h) forecast(ets(y, model="AAN", damped=TRUE), h = h)
+errors_AAND <- tsCV(cIT_14, f_AAND, h=1, window=15)
+
+f_MMND  <- function(y, h) forecast(ets(y, model="MMN", damped=TRUE), h = h)
+errors_MMND <- tsCV(cIT_14, f_MMND, h=1, window=15)
+
+f_TBATS  <- function(y, h) forecast(tbats(y), h = h)
+errors_TBATS <- tsCV(cIT_14, f_TBATS, h=1, window=15)
+
+f_ARIMA  <- function(y, h) forecast(auto.arima(y), h = h)
+errors_ARIMA <- tsCV(cIT_14, f_ARIMA, h=1, window=15)
+
+#mean(abs(errors_AANF/cIT_14), na.rm=TRUE)*100
+#mean(abs(errors_MMNF/cIT_14), na.rm=TRUE)*100
+#mean(abs(errors_AAND/cIT_14), na.rm=TRUE)*100
+#mean(abs(errors_MMND/cIT_14), na.rm=TRUE)*100
+#mean(abs(errors_TBATS/cIT_14), na.rm=TRUE)*100
+#mean(abs(errors_ARIMA/cIT_14), na.rm=TRUE)*100
+
+```
+Based on the mean errors, we conclude that for Italy, the best model is the MMND model. 
+
+
+```{r, echo=FALSE}
+
+# Export the results out
+write.csv(cIT_14_MMND_pred, file = "IT no lockdown+14d (MMND) .csv") # export the selected model's predictions into a CSV file
+
+plot(cIT_14_MMND_pred, xlab="Year", ylab="Italy Acummulated deaths", ylim=c(0,100000))
+lines(cIT_F, col="red")
+abline(v=2020+69/365, col="green")
+legend("left", legend=c("Best fitted model","Real death toll", "Start of Lockdown"), col=c("blue", "red","green"), lty=1)
+
+
+```
+
+
+### France: 14 days after lockdown
+
+
+```{r, echo=FALSE}
+#####################
+###France ANALYSIS###
+####################
+
+
+t0=2020+53/365
+cFRA_14 <- ts(covid_data$Cdeaths_IT[58:89],start=t0, frequency=365) #t=0 @ day75. +14d 
+cFRA_F <- ts(covid_data$Cdeaths_IT[58:148],start=t0, frequency=365)   # a supprimer?
+
+
+cFRA_14_AAN <- ets(cFRA_14, model="AAN", damped=FALSE)
+cFRA_14_AAZ <- ets(cFRA_14, model="AAZ", damped=FALSE)
+cFRA_14_MMN <- ets(cFRA_14, model="MMN", damped=FALSE)
+cFRA_14_MMZ <- ets(cFRA_14, model="MMZ", damped=FALSE)
+
+cFRA_14_AAND <- ets(cFRA_14, model="AAN", damped=TRUE)
+cFRA_14_AAZD <- ets(cFRA_14, model="AAZ", damped=TRUE)
+cFRA_14_MMND <- ets(cFRA_14, model="MMN", damped=TRUE)
+cFRA_14_MMZD <- ets(cFRA_14, model="MMZ", damped=TRUE)
+
+# Create their prediction "cones" for 360 months (30 years) into the future with quintile confidence intervals
+cFRA_14_AAN_pred <- forecast(cFRA_14_AAN, h=30, level=c(0.8, 0.95))
+cFRA_14_AAZ_pred <- forecast(cFRA_14_AAZ, h=30, level=c(0.8, 0.95))
+cFRA_14_MMN_pred <- forecast(cFRA_14_MMN, h=30, level=c(0.8, 0.95))
+cFRA_14_MMZ_pred <- forecast(cFRA_14_MMZ, h=30, level=c(0.8, 0.95))
+
+cFRA_14_AAND_pred <- forecast(cFRA_14_AAND, h=30, level=c(0.8, 0.95))
+cFRA_14_AAZD_pred <- forecast(cFRA_14_AAZD, h=30, level=c(0.8, 0.95))
+cFRA_14_MMND_pred <- forecast(cFRA_14_MMND, h=30, level=c(0.8, 0.95))
+cFRA_14_MMZD_pred <- forecast(cFRA_14_MMZD, h=30, level=c(0.8, 0.95))
+
+cFRA_14_tbats <- tbats(cFRA_14)
+cFRA_14_tbats_pred <-forecast(cFRA_14_tbats, h=30, level=c(0.8, 0.95))
+par(mfrow=c(1,1))
+
+cFRA_14_ARIMA <- auto.arima(cFRA_14,seasonal=FALSE)
+cFRA_14_ARIMA_pred <- forecast(cFRA_14_ARIMA,30)
+
+
+###
+### Comparing models -- Time series Cross Validation (Rolling Horizon Holdout)
+###
+
+f_AANF  <- function(y, h) forecast(ets(y, model="AAN"), h = h)
+errors_AANF <- tsCV(cFRA_14, f_AANF, h=1, window=10)
+
+f_MMNF<- function(y, h) forecast(ets(y, model="MMN"), h = h)
+errors_MMNF <- tsCV(cFRA_14, f_MMNF, h=1, window=10)
+
+f_AAND  <- function(y, h) forecast(ets(y, model="AAN", damped=TRUE), h = h)
+errors_AAND <- tsCV(cFRA_14, f_AAND, h=1, window=10)
+
+f_MMND  <- function(y, h) forecast(ets(y, model="MMN", damped=TRUE), h = h)
+errors_MMND <- tsCV(cFRA_14, f_MMND, h=1, window=10)
+
+f_TBATS  <- function(y, h) forecast(tbats(y), h = h)
+errors_TBATS <- tsCV(cFRA_14, f_TBATS, h=1, window=10)
+
+f_ARIMA  <- function(y, h) forecast(auto.arima(y), h = h)
+errors_ARIMA <- tsCV(cFRA_14, f_ARIMA, h=1, window=10)
+
+#mean(abs(errors_AANF/cFRA_14), na.rm=TRUE)*100
+#mean(abs(errors_MMNF/cFRA_14), na.rm=TRUE)*100
+#mean(abs(errors_AAND/cFRA_14), na.rm=TRUE)*100
+#mean(abs(errors_MMND/cFRA_14), na.rm=TRUE)*100
+#mean(abs(errors_TBATS/cFRA_14), na.rm=TRUE)*100
+#mean(abs(errors_ARIMA/cFRA_14), na.rm=TRUE)*100
+
+
+```
+
+Based on the mean errors, we conclude that for France the best model is the TBATS model
+
+
+```{r, echo=FALSE}
+
+
+
+# Export the results out
+write.csv(cFRA_14_tbats_pred, file = "FRA no lockdown+14d (MMND) .csv") # export the selected model's predictions into a CSV file
+
+plot(cFRA_14_tbats_pred, xlab="Year", ylab="France Acummulated deaths", ylim=c(0,100000))
+lines(cFRA_F, col="red")
+abline(v=2020+69/365, col="green")
+legend("left", legend=c("Best fitted model","Real death toll", "Start of Lockdown"), col=c("blue", "red","green"), lty=1)
 
 ```
 
